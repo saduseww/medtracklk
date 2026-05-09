@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MedTrack AI Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #e5ddd5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            width: 400px;
+            height: 600px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px gray;
+        }
+
+        .header {
+            background: #075e54;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #chat {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #ece5dd;
+        }
+
+        .msg {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            max-width: 70%;
+            clear: both;
+        }
+
+        .user {
+            background: #dcf8c6;
+            float: right;
+            text-align: right;
+        }
+
+        .bot {
+            background: white;
+            float: left;
+        }
+
+        .inputBox {
+            display: flex;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            background: #075e54;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="header">🤖 MedTrack AI</div>
+
+    <div id="chat"></div>
+
+    <div style="padding:10px; display:flex; gap:5px; justify-content:center; background:#f0f0f0;">
+
+        <button onclick="quickAsk('fever')">Fever</button>
+        <button onclick="quickAsk('pain')">Pain</button>
+        <button onclick="quickAsk('cough')">Cough</button>
+    
+    </div>
+    
+    <div class="inputBox">
+        <input type="text" id="userInput" placeholder="Ask medicine question...">
+        <button onclick="ask()">Send</button>
+    </div>
+
+</div>
+
+<script>
+    function quickAsk(type) {
+
+let chat = document.getElementById("chat");
+
+let msg = type;
+let reply = getReply(type);
+
+chat.innerHTML += `<div class="msg user">${msg}</div>`;
+chat.innerHTML += `<div class="msg bot">${reply}</div>`;
+
+chat.scrollTop = chat.scrollHeight;
+}
+function ask() {
+
+    let msg = document.getElementById("userInput").value;
+    let chat = document.getElementById("chat");
+
+    if (msg.trim() === "") return;
+
+    let reply = getReply(msg.toLowerCase());
+
+    chat.innerHTML += `<div class="msg user">${msg}</div>`;
+    chat.innerHTML += `<div class="msg bot">${reply}</div>`;
+
+    document.getElementById("userInput").value = "";
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// keep your same bot logic here
+function getReply(msg) {
+
+if (msg.includes("fever")) {
+    return "Fever care: rest, hydration, and Paracetamol if needed. Seek doctor if high fever.";
+}
+
+if (msg.includes("pain")) {
+    return "For pain: Paracetamol or Ibuprofen may help depending on type of pain.";
+}
+
+if (msg.includes("cough")) {
+    return "For cough: warm fluids, honey, and cough syrup may help.";
+}
+
+return "I can help with fever, pain, cough, and basic medicine info.";
+}
+</script>
+
+</body>
+</html>

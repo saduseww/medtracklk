@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Low Stock Alerts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #fff8e6;
+            padding: 30px;
+        }
+
+        h1 {
+            color: orange;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid gray;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: orange;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>⚠️ Low Stock Medicines</h1>
+
+<table id="stockTable">
+
+    <tr>
+        <th>Name</th>
+        <th>Batch</th>
+        <th>Quantity</th>
+    </tr>
+
+</table>
+
+<script>
+
+fetch("/low-stock")
+.then(response => response.json())
+.then(data => {
+
+    const table = document.getElementById("stockTable");
+
+    data.forEach(med => {
+
+        const row = `
+            <tr>
+                <td>${med.medName}</td>
+                <td>${med.batchNo}</td>
+                <td>${med.quantity}</td>
+            </tr>
+        `;
+
+        table.innerHTML += row;
+    });
+
+});
+
+</script>
+
+</body>
+</html>

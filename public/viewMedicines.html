@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Medicines</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid gray;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: green;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>💊 Medicine List</h1>
+    <input type="text" id="searchBox" placeholder="Search Medicine..." style="width:100%;padding:10px;margin-bottom:10px;">
+    <table id="medicineTable">
+    
+        <tr>
+            <th>Name</th>
+            <th>Batch</th>
+            <th>Quantity</th>
+            <th>Expiry</th>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+        </tr>
+    
+    </table>
+    
+    <script>
+
+        let allMedicines = [];
+        
+        fetch("/medicines")
+        .then(res => res.json())
+        .then(data => {
+        
+            allMedicines = data;
+            renderTable(allMedicines);
+        
+        });
+        
+        function renderTable(data) {
+        
+            const table = document.getElementById("medicineTable");
+        
+            table.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>Batch</th>
+                    <th>Quantity</th>
+                    <th>Expiry</th>
+                    <th>Buy Price</th>
+                    <th>Sell Price</th>
+                </tr>
+            `;
+        
+            data.forEach(med => {
+        
+                table.innerHTML += `
+                    <tr>
+                        <td>${med.medName}</td>
+                        <td>${med.batchNo}</td>
+                        <td>${med.quantity}</td>
+                        <td>${med.expiryDate}</td>
+                        <td>${med.buyPrice}</td>
+                        <td>${med.sellPrice}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        // SEARCH FUNCTION
+        document.getElementById("searchBox").addEventListener("keyup", function() {
+        
+            let value = this.value.toLowerCase();
+        
+            let filtered = allMedicines.filter(med =>
+                med.medName.toLowerCase().includes(value)
+            );
+        
+            renderTable(filtered);
+        
+        });
+        
+        </script>
+    
+    </body>
+</html>

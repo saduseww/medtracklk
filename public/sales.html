@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales History</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4ff;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid gray;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💰 Sales History</h1>
+
+<table id="salesTable">
+
+    <tr>
+        <th>Medicine</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+        <th>Date</th>
+    </tr>
+
+</table>
+
+<script>
+
+fetch("/sales")
+.then(res => res.json())
+.then(data => {
+
+    const table = document.getElementById("salesTable");
+
+    data.forEach(sale => {
+
+        const row = `
+            <tr>
+                <td>${sale.medName}</td>
+                <td>${sale.quantity}</td>
+                <td>${sale.unitPrice}</td>
+                <td>${sale.total}</td>
+                <td>${sale.saleDate}</td>
+            </tr>
+        `;
+
+        table.innerHTML += row;
+    });
+
+});
+
+</script>
+
+</body>
+</html>

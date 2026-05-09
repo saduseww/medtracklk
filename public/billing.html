@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <style>
+        body {
+            font-family: Arial;
+            background: #eef6ff;
+            text-align: center;
+            padding-top: 30px;
+        }
+
+        .box {
+            background: white;
+            width: 400px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        button {
+            width: 95%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>💰 Billing System</h2>
+
+    <form action="/bill" method="POST">
+
+        <input type="text" name="medName" placeholder="Medicine Name" required>
+
+        <input type="number" name="quantity" placeholder="Quantity" required>
+
+        <input type="number" name="price" placeholder="Unit Price" required>
+
+        <button type="submit">Generate Bill</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

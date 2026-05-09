@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expiry Alerts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            background: #fff3f3;
+            padding: 30px;
+        }
+
+        h1 {
+            color: red;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid gray;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: red;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>⚠️ Expiring Medicines</h1>
+
+<table id="alertTable">
+
+    <tr>
+        <th>Name</th>
+        <th>Batch</th>
+        <th>Expiry Date</th>
+        <th>Quantity</th>
+    </tr>
+
+</table>
+
+<script>
+
+fetch("/expiry-alerts")
+.then(response => response.json())
+.then(data => {
+
+    const table = document.getElementById("alertTable");
+
+    data.forEach(med => {
+
+        const row = `
+            <tr>
+                <td>${med.medName}</td>
+                <td>${med.batchNo}</td>
+                <td>${med.expiryDate}</td>
+                <td>${med.quantity}</td>
+            </tr>
+        `;
+
+        table.innerHTML += row;
+    });
+
+});
+
+</script>
+
+</body>
+</html>
