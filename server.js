@@ -62,7 +62,7 @@ app.post("/login", (req, res) => {
                 role: user.role
             };
 
-            if (user.role === "admin") {
+            if (user.role === "admin" && password === "123") {
                 res.redirect("/dashboard.html");
             } else {
                 res.redirect("/staff.html");
@@ -338,6 +338,9 @@ app.get("/logout", (req, res) => {
 
 
 // Start server
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log("Server running");
 });
