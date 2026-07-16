@@ -1,0 +1,259 @@
+[2026-06-25T12:18:31.863Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:18:31.866Z] [INFO] Inventory check started...
+[2026-06-25T12:18:31.930Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:18:31.938Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:18:31.940Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:18:31.941Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:18:31.943Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:18:34.025Z] [ERROR] Email failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-c92ba0a71dfsm1704324a12.12 - gsmtp
+[2026-06-25T12:26:27.234Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:26:27.237Z] [INFO] Inventory check started...
+[2026-06-25T12:26:27.295Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:26:27.312Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:26:27.313Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:26:27.314Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:26:27.315Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:26:33.154Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T12:33:02.465Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:33:02.468Z] [INFO] Inventory check started...
+[2026-06-25T12:33:02.532Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:33:02.539Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:33:02.541Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:33:02.543Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:33:02.544Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:33:07.602Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T12:40:53.853Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:40:53.857Z] [INFO] Inventory check started...
+[2026-06-25T12:40:53.928Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:40:53.945Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:40:53.947Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:40:53.949Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:40:53.951Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:40:59.028Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T12:45:53.652Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:45:53.658Z] [INFO] Inventory check started...
+[2026-06-25T12:45:53.779Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:45:53.789Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:45:53.792Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:45:53.795Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:45:53.797Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:45:59.306Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T12:46:43.566Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T12:46:43.573Z] [INFO] Inventory check started...
+[2026-06-25T12:46:43.704Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T12:46:43.721Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T12:46:43.726Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T12:46:43.729Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T12:46:43.731Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T12:46:49.061Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:00:01.743Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:00:01.746Z] [INFO] Inventory check started...
+[2026-06-25T13:00:01.806Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:00:01.812Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:00:01.816Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:00:01.817Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:00:01.818Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:00:05.869Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:01:53.629Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:01:53.632Z] [INFO] Inventory check started...
+[2026-06-25T13:01:53.692Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:01:53.707Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:01:53.708Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:01:53.710Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:01:53.713Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:01:58.440Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:02:33.796Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:02:33.798Z] [INFO] Inventory check started...
+[2026-06-25T13:02:33.856Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:02:33.869Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:02:33.871Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:02:33.873Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:02:33.878Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:02:38.848Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:08:38.440Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:08:38.443Z] [INFO] Inventory check started...
+[2026-06-25T13:08:38.496Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:08:38.510Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:08:38.511Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:08:38.513Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:08:38.515Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:08:43.054Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:09:31.513Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:09:31.517Z] [INFO] Inventory check started...
+[2026-06-25T13:09:31.602Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:09:31.609Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:09:31.610Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:09:31.612Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:09:31.613Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:09:36.137Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:15:18.749Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:15:18.773Z] [INFO] Inventory check started...
+[2026-06-25T13:15:19.211Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:15:19.341Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:15:19.364Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:15:19.375Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:15:19.383Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:15:25.966Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T13:21:27.419Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T13:21:27.438Z] [INFO] Inventory check started...
+[2026-06-25T13:21:27.923Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T13:21:27.977Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T13:21:27.988Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T13:21:28.008Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T13:21:28.025Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T13:21:33.952Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T14:30:21.258Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T14:30:21.261Z] [INFO] Inventory check started...
+[2026-06-25T14:30:21.319Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T14:30:21.327Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T14:30:21.330Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T14:30:21.331Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T14:30:21.333Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T14:30:26.056Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T14:31:16.242Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T14:31:16.245Z] [INFO] Inventory check started...
+[2026-06-25T14:31:16.307Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T14:31:16.318Z] [INFO] Total: 5 | LowStock: 1 | Expired: 3 | ExpiringSoon: 1
+[2026-06-25T14:31:16.320Z] [WARN] Low Stock: Omeprazole 20mg
+[2026-06-25T14:31:16.321Z] [WARN] Expired: Paracetamol 500mg, Amoxicillin 500mg, Cetirizine 10mg
+[2026-06-25T14:31:16.323Z] [WARN] Expiring Soon: Omeprazole 20mg
+[2026-06-25T14:31:21.776Z] [INFO] Alert email sent to saduseww@gmail.com ✅
+[2026-06-25T14:40:05.159Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T14:40:05.211Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T14:41:20.048Z] [INFO] Checking single medicine after add/update: Ibuprofen 400mg
+[2026-06-25T14:41:20.051Z] [WARN] Invalid expiryDate for Ibuprofen 400mg — skipping alert check.
+[2026-06-25T14:43:48.670Z] [INFO] Checking single medicine after add/update: vitemin c
+[2026-06-25T14:43:52.848Z] [INFO] Alert email sent for vitemin c ✅
+[2026-06-25T14:47:57.052Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T14:47:57.105Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T14:52:16.728Z] [INFO] Checking single medicine after add/update: vitemin c
+[2026-06-25T14:52:22.365Z] [INFO] Alert email sent for vitemin c ✅
+[2026-06-25T14:55:00.364Z] [INFO] Checking single medicine after add/update: vitemin c
+[2026-06-25T14:56:05.243Z] [ERROR] Email failed: Unexpected socket close
+[2026-06-25T14:58:46.211Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-06-25T14:58:52.141Z] [INFO] Alert email sent for Amoxicillin 500mg ✅
+[2026-06-25T14:59:51.448Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-25T14:59:55.859Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-25T15:01:49.707Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-06-25T15:01:57.051Z] [INFO] Alert email sent for Amoxicillin 500mg ✅
+[2026-06-25T15:15:22.746Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-25T15:15:32.195Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-25T15:16:01.508Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-25T15:16:01.579Z] [INFO] Scheduler DB connected ✅
+[2026-06-25T15:16:52.155Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-25T15:16:56.218Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-27T06:48:38.669Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T06:48:38.858Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T06:52:11.922Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T06:52:11.995Z] [ERROR] Email failed: getaddrinfo ENOTFOUND smtp.gmail.com
+[2026-06-27T06:54:57.230Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T06:55:02.197Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-27T06:55:27.259Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T06:55:31.252Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-27T06:55:32.242Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T06:55:37.914Z] [INFO] Alert email sent for Cetirizine 10mg ✅
+[2026-06-27T06:55:53.053Z] [INFO] Checking single medicine after add/update: Ibuprofen 400mg
+[2026-06-27T06:55:53.054Z] [WARN] Invalid expiryDate for Ibuprofen 400mg — skipping alert check.
+[2026-06-27T07:35:12.411Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T07:35:12.465Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T07:35:49.582Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-06-27T07:35:49.584Z] [WARN] Invalid expiryDate for Amoxicillin 500mg — skipping alert check.
+[2026-06-27T08:30:08.714Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T08:30:08.795Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T08:36:30.350Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T08:36:30.435Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T08:49:56.788Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T08:49:56.864Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T08:53:30.095Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T08:53:30.543Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T09:19:35.102Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T09:19:35.175Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T09:23:44.870Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T09:23:44.942Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T09:26:16.277Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T09:26:16.279Z] [WARN] Invalid expiryDate for Cetirizine 10mg — skipping alert check.
+[2026-06-27T09:27:12.081Z] [INFO] Checking single medicine after add/update: Ibuprofen 400mg
+[2026-06-27T09:27:12.083Z] [WARN] Invalid expiryDate for Ibuprofen 400mg — skipping alert check.
+[2026-06-27T09:28:56.910Z] [INFO] Checking single medicine after add/update: Omeprazole 20mg
+[2026-06-27T09:28:56.913Z] [WARN] Invalid expiryDate for Omeprazole 20mg — skipping alert check.
+[2026-06-27T12:16:40.468Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-06-27T12:16:40.833Z] [INFO] Scheduler DB connected ✅
+[2026-06-27T12:39:28.136Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T12:39:28.634Z] [ERROR] Email failed: getaddrinfo ENOTFOUND smtp.gmail.com
+[2026-06-27T12:39:39.887Z] [INFO] Checking single medicine after add/update: Cetirizine 10mg
+[2026-06-27T12:39:40.102Z] [ERROR] Email failed: getaddrinfo ENOTFOUND smtp.gmail.com
+[2026-06-27T12:40:23.161Z] [INFO] Checking single medicine after add/update: Paracetamol 500mg
+[2026-06-27T12:40:23.203Z] [WARN] Invalid expiryDate for Paracetamol 500mg — skipping alert check.
+[2026-06-27T12:40:42.373Z] [INFO] Checking single medicine after add/update: Paracetamol 500mg
+[2026-06-27T12:40:42.382Z] [INFO] Paracetamol 500mg is OK — no email sent.
+[2026-07-04T02:54:37.072Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-04T02:54:37.176Z] [INFO] Scheduler DB connected ✅
+[2026-07-04T02:59:19.862Z] [INFO] Checking single medicine after add/update: example 01
+[2026-07-04T02:59:24.907Z] [INFO] Alert email sent for example 01 ✅
+[2026-07-04T02:59:35.554Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-07-04T02:59:35.558Z] [WARN] Invalid expiryDate for Amoxicillin 500mg — skipping alert check.
+[2026-07-04T02:59:38.285Z] [INFO] Checking single medicine after add/update: example 01
+[2026-07-04T02:59:38.289Z] [WARN] Invalid expiryDate for example 01 — skipping alert check.
+[2026-07-04T02:59:46.564Z] [INFO] Checking single medicine after add/update: example 01
+[2026-07-04T02:59:46.568Z] [WARN] Invalid expiryDate for example 01 — skipping alert check.
+[2026-07-08T05:50:32.781Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-08T05:50:32.998Z] [INFO] Scheduler DB connected ✅
+[2026-07-08T05:52:08.774Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-07-08T05:52:08.776Z] [WARN] Invalid expiryDate for Amoxicillin 500mg — skipping alert check.
+[2026-07-08T05:54:49.160Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-08T05:54:49.358Z] [INFO] Scheduler DB connected ✅
+[2026-07-08T05:55:41.611Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-07-08T05:55:41.613Z] [INFO] Amoxicillin 500mg is OK — no email sent.
+[2026-07-08T05:56:35.944Z] [INFO] Checking single medicine after add/update: Amoxicillin 500mg
+[2026-07-08T05:56:40.081Z] [INFO] Alert email sent for Amoxicillin 500mg ✅
+[2026-07-08T15:31:21.981Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-08T15:31:22.081Z] [INFO] Scheduler DB connected ✅
+[2026-07-08T15:37:28.208Z] [INFO] Checking single medicine after add/update: vitamin A
+[2026-07-08T15:37:28.211Z] [INFO] vitamin A is OK — no email sent.
+[2026-07-08T15:37:54.202Z] [INFO] Checking single medicine after add/update: vitamin A
+[2026-07-08T15:37:54.204Z] [INFO] vitamin A is OK — no email sent.
+[2026-07-08T15:40:15.970Z] [INFO] Checking single medicine after add/update: vitamin A
+[2026-07-08T15:40:21.105Z] [INFO] Alert email sent for vitamin A ✅
+[2026-07-08T15:40:42.870Z] [INFO] Checking single medicine after add/update: vitamin A
+[2026-07-08T15:40:42.872Z] [INFO] vitamin A is OK — no email sent.
+[2026-07-08T15:41:08.080Z] [INFO] Checking single medicine after add/update: vitamin A
+[2026-07-08T15:41:08.083Z] [INFO] vitamin A is OK — no email sent.
+[2026-07-08T15:59:09.899Z] [INFO] Checking single medicine after add/update: vitamin  A
+[2026-07-08T15:59:09.909Z] [INFO] vitamin  A is OK — no email sent.
+[2026-07-08T15:59:56.891Z] [INFO] Checking single medicine after add/update: vitamin  A
+[2026-07-08T15:59:56.895Z] [INFO] vitamin  A is OK — no email sent.
+[2026-07-08T16:00:08.715Z] [INFO] Checking single medicine after add/update: vitamin  A
+[2026-07-08T16:00:12.445Z] [INFO] Alert email sent for vitamin  A ✅
+[2026-07-09T15:04:20.969Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-09T15:04:21.064Z] [INFO] Scheduler DB connected ✅
+[2026-07-09T15:16:56.980Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:16:56.982Z] [INFO] Vitemin D Tablet is OK — no email sent.
+[2026-07-09T15:17:38.402Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:17:38.411Z] [INFO] Vitemin D Tablet is OK — no email sent.
+[2026-07-09T15:18:08.239Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:18:08.242Z] [INFO] Vitemin D Tablet is OK — no email sent.
+[2026-07-09T15:18:18.196Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:18:29.246Z] [INFO] Alert email sent for Vitemin D Tablet ✅
+[2026-07-09T15:18:49.500Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:18:56.670Z] [INFO] Alert email sent for Vitemin D Tablet ✅
+[2026-07-09T15:23:58.331Z] [INFO] Checking single medicine after add/update: Omeprazole 20mg
+[2026-07-09T15:23:58.334Z] [WARN] Invalid expiryDate for Omeprazole 20mg — skipping alert check.
+[2026-07-09T15:24:04.770Z] [INFO] Checking single medicine after add/update: Ibuprofen 400mg
+[2026-07-09T15:24:04.773Z] [WARN] Invalid expiryDate for Ibuprofen 400mg — skipping alert check.
+[2026-07-09T15:24:29.564Z] [INFO] Checking single medicine after add/update: Ibuprofen 400mg
+[2026-07-09T15:24:29.566Z] [INFO] Ibuprofen 400mg is OK — no email sent.
+[2026-07-09T15:24:40.741Z] [INFO] Checking single medicine after add/update: Omeprazole 20mg
+[2026-07-09T15:24:46.004Z] [INFO] Alert email sent for Omeprazole 20mg ✅
+[2026-07-09T15:28:58.175Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:28:58.183Z] [INFO] Vitemin D Tablet is OK — no email sent.
+[2026-07-09T15:29:46.877Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-09T15:29:51.478Z] [INFO] Alert email sent for Vitemin D Tablet ✅
+[2026-07-14T14:26:09.814Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-14T14:26:09.975Z] [INFO] Scheduler DB connected ✅
+[2026-07-15T03:45:36.467Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-15T03:45:36.631Z] [INFO] Scheduler DB connected ✅
+[2026-07-15T06:24:53.919Z] [INFO] Checking single medicine after add/update: Vitemin D Tablet
+[2026-07-15T06:24:53.922Z] [WARN] Invalid expiryDate for Vitemin D Tablet — skipping alert check.
+[2026-07-15T07:14:50.607Z] [INFO] Scheduler started — daily check at 8:00 AM ✅
+[2026-07-15T07:14:50.776Z] [INFO] Scheduler DB connected ✅

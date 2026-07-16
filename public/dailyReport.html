@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTrack LK - Daily Sales Report</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bg:       #070d1a;
+  --panel:    #0c1528;
+  --panel2:   #111d35;
+  --border:   rgba(255,255,255,0.07);
+  --text:     #e8f0ff;
+  --muted:    #5a7299;
+  --green:    #00ffaa;
+  --blue:     #4db8ff;
+  --orange:   #ffb347;
+  --red:      #ff5e7a;
+  --purple:   #b57bff;
+}
+
+body.light {
+  --bg:     #f0f4ff;
+  --panel:  #ffffff;
+  --panel2: #f7f9ff;
+  --border: rgba(0,0,0,0.08);
+  --text:   #0d1a33;
+  --muted:  #6b7c99;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(0,255,170,0.06), transparent),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(77,184,255,0.06), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(181,123,255,0.04), transparent);
+  transition: opacity 0.3s;
+}
+body.light::before { opacity: 0.4; }
+
+.wrapper { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed; left: 0; top: 0;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(12,21,40,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.3s;
+  z-index: 100;
+}
+body.light .sidebar { background: rgba(255,255,255,0.9); border-right-color: rgba(0,0,0,0.08); }
+
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,255,170,0.06) 0%, rgba(77,184,255,0.03) 100%);
+  pointer-events: none;
+}
+
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 4px 10px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.brand-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0,255,170,0.35);
+}
+.brand-text { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #fff; }
+body.light .brand-text { color: #0d1a33; }
+.brand-sub { font-size: 10px; color: var(--muted); margin-top: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+.nav-section { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 10px 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  text-decoration: none; color: rgba(255,255,255,0.6);
+  font-size: 13.5px; font-weight: 500; transition: all 0.2s;
+  cursor: pointer; border: none; background: none;
+  width: 100%; text-align: left; position: relative;
+}
+body.light .nav-item { color: var(--muted); }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; transform: translateX(3px); }
+body.light .nav-item:hover { background: rgba(0,0,0,0.04); color: #0d1a33; }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(0,255,170,0.12), rgba(77,184,255,0.06));
+  color: #fff; border-left: 2.5px solid #00ffaa; padding-left: 9.5px;
+}
+body.light .nav-item.active { background: linear-gradient(90deg, rgba(0,200,130,0.1), rgba(0,150,255,0.05)); color: #0d1a33; }
+
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--muted); transition: background 0.2s, box-shadow 0.2s; }
+.nav-item.active .nav-dot { background: #00ffaa; box-shadow: 0 0 8px #00ffaa; }
+.nav-item.danger { color: #ff5e7a; margin-top: 8px; }
+.nav-item.danger:hover { background: rgba(255,94,122,0.1); color: #ff5e7a; transform: none; }
+
+.nav-footer { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid var(--border); }
+.user-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+}
+body.light .user-chip { background: rgba(0,0,0,0.03); }
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,255,170,0.2), rgba(77,184,255,0.2));
+  border: 1px solid rgba(0,255,170,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #00ffaa; flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 11px; color: var(--muted); }
+
+.main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px;
+  background: rgba(12,21,40,0.6);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border); border-radius: 14px;
+  flex-shrink: 0; transition: background 0.3s;
+}
+body.light .topbar { background: rgba(255,255,255,0.85); }
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+.topbar-title { font-size: 17px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--muted); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(0,255,170,0.08); border: 1px solid rgba(0,255,170,0.22);
+  font-size: 12px; font-weight: 600; color: #00ffaa;
+}
+body.light .status-pill { background: rgba(0,180,110,0.08); border-color: rgba(0,180,110,0.25); color: #00965a; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ffaa; animation: pulse-anim 2s infinite; }
+body.light .pulse-dot { background: #00965a; }
+@keyframes pulse-anim {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,170,0.5); }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,255,170,0); }
+}
+
+.theme-btn, .date-input, .action-btn {
+  padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05); color: var(--muted);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.theme-btn:hover, .action-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: rgba(255,255,255,0.08); }
+body.light .theme-btn, body.light .action-btn { background: rgba(0,0,0,0.04); }
+body.light .theme-btn:hover, body.light .action-btn:hover { background: rgba(0,0,0,0.07); }
+
+.date-input { color: var(--text); cursor: pointer; }
+
+.box {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  transition: background 0.3s;
+}
+
+/* ─── REPORT CONTROLS ──────────────────────────────────────────── */
+.controls-row {
+  display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap;
+}
+.controls-row .box { padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex: 1; }
+.controls-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+/* ─── SUMMARY CARDS ────────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+.card { padding: 22px; position: relative; overflow: hidden; }
+.card-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 14px;
+}
+.card-icon.green  { background: rgba(0,255,170,0.12); }
+.card-icon.blue   { background: rgba(77,184,255,0.12); }
+.card-icon.orange { background: rgba(255,179,71,0.12); }
+.card-icon.purple { background: rgba(181,123,255,0.12); }
+.card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
+.card-value { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+.card-value.green  { color: #00ffaa; }
+.card-value.blue   { color: #4db8ff; }
+.card-value.orange { color: #ffb347; }
+.card-value.purple { color: #b57bff; }
+.card-sub { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+
+/* ─── TABLE ────────────────────────────────────────────────────── */
+.table-box { margin-top: 18px; padding: 22px; flex: 1; }
+.table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.table-header h3 { font-size: 15px; font-weight: 700; }
+.table-header .count { font-size: 12px; color: var(--muted); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead th {
+  text-align: left; padding: 10px 12px;
+  color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+  border-bottom: 1px solid var(--border); font-weight: 700;
+}
+thead th.num, tbody td.num { text-align: right; }
+tbody td { padding: 12px; border-bottom: 1px solid var(--border); }
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+body.light tbody tr:hover { background: rgba(0,0,0,0.02); }
+tbody tr:last-child td { border-bottom: none; }
+.rank-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 6px;
+  background: rgba(0,255,170,0.1); color: #00ffaa;
+  font-size: 11px; font-weight: 700; margin-right: 8px;
+}
+.empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 38px; margin-bottom: 10px; }
+.loading-state { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 13px; }
+
+/* ─── MOBILE NAV ─────────────────────────────────────────────────── */
+.mobile-nav {
+  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 12px 16px;
+  background: rgba(12,21,40,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+body.light .mobile-nav { background: rgba(255,255,255,0.95); }
+.mobile-brand { display: flex; align-items: center; gap: 10px; }
+.mobile-brand-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+  box-shadow: 0 0 14px rgba(0,255,170,0.3); flex-shrink: 0;
+}
+.mobile-brand-text { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+.mobile-right { display: flex; align-items: center; gap: 8px; }
+.hamburger {
+  width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer; transition: background 0.2s;
+}
+.hamburger:hover { background: rgba(255,255,255,0.1); }
+body.light .hamburger { background: rgba(0,0,0,0.04); }
+body.light .hamburger:hover { background: rgba(0,0,0,0.08); }
+.hamburger span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(2px); }
+.drawer-overlay.open { display: block; }
+.sidebar.drawer-open { transform: translateX(0) !important; box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
+
+@media (max-width: 900px) {
+  .mobile-nav { display: flex; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 200; }
+  .main { margin-left: 0; width: 100%; padding: 80px 14px 14px; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="mobile-nav">
+  <div class="mobile-brand">
+    <div class="mobile-brand-icon">💊</div>
+    <div class="mobile-brand-text">MedTrack LK</div>
+  </div>
+  <div class="mobile-right">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMobile" style="padding:6px 10px">🌙</button>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<div class="wrapper">
+
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">💊</div>
+      <div>
+        <div class="brand-text">MedTrack LK</div>
+        <div class="brand-sub">Pharmacy System</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Main Menu</div>
+    <a class="nav-item" href="/dashboard.html"><div class="nav-dot"></div> Dashboard</a>
+    <a class="nav-item" href="/addMedicine.html"><div class="nav-dot"></div> Add Medicine</a>
+    <a class="nav-item" href="/viewMedicines.html"><div class="nav-dot"></div> Inventory</a>
+    <a class="nav-item" href="/billing.html"><div class="nav-dot"></div> Billing</a>
+    <a class="nav-item" href="/chatbot.html"><div class="nav-dot"></div> AI Chatbot</a>
+    <a class="nav-item active" href="/dailyReport.html"><div class="nav-dot"></div> Daily Report</a>
+
+    <div class="nav-footer">
+      <div class="user-chip">
+        <div class="avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Pharmacist</div>
+        </div>
+      </div>
+      <a class="nav-item danger" href="/logout" style="margin-top:10px">
+        <div class="nav-dot" style="background:#ff5e7a"></div> Logout
+      </a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Daily Sales Report</div>
+        <div class="topbar-sub" id="dateStr">Loading…</div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill">
+          <div class="pulse-dot"></div> Live Data
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="box">
+        <label for="reportDate">Report date:</label>
+        <input type="date" id="reportDate" class="date-input">
+        <button class="action-btn" onclick="loadReport()">🔄 Refresh</button>
+        <button class="action-btn" onclick="goToday()">📅 Today</button>
+        <button class="action-btn" onclick="printReport()" style="margin-left:auto">🖨 Print</button>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="box card">
+        <div class="card-icon green">💰</div>
+        <div class="card-label">Total Earnings</div>
+        <div class="card-value green" id="cardRevenue">Rs 0</div>
+        <div class="card-sub" id="cardRevenueSub">—</div>
+      </div>
+      <div class="box card">
+        <div class="card-icon blue">💊</div>
+        <div class="card-label">Medicines Sold</div>
+        <div class="card-value blue" id="cardQty">0</div>
+        <div class="card-sub">Total units across all sales</div>
+      </div>
+      <div class="box card">
+        <div class="card-icon orange">🧾</div>
+        <div class="card-label">Transactions</div>
+        <div class="card-value orange" id="cardTransactions">0</div>
+        <div class="card-sub">Number of sales recorded</div>
+      </div>
+      <div class="box card">
+        <div class="card-icon purple">🏆</div>
+        <div class="card-label">Top Seller</div>
+        <div class="card-value purple" id="cardTopSeller" style="font-size:18px">—</div>
+        <div class="card-sub" id="cardTopSellerSub">—</div>
+      </div>
+    </div>
+
+    <div class="box table-box">
+      <div class="table-header">
+        <h3>📋 Medicines Sold — Breakdown</h3>
+        <div class="count" id="itemCount">0 items</div>
+      </div>
+      <div id="tableWrap">
+        <div class="loading-state">Loading report…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const reportDateInput = document.getElementById("reportDate");
+
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+reportDateInput.value = todayStr();
+
+function fmtMoney(n) {
+  return "Rs " + Number(n).toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtDateNice(isoDate) {
+  const d = new Date(isoDate + "T00:00:00");
+  return d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+async function loadReport() {
+  const date = reportDateInput.value || todayStr();
+  document.getElementById("dateStr").innerText = fmtDateNice(date);
+  document.getElementById("tableWrap").innerHTML = '<div class="loading-state">Loading report…</div>';
+
+  try {
+    const res = await fetch(`/api/daily-report?date=${date}`, { credentials: "include" });
+
+    if (res.status === 401) {
+      document.getElementById("tableWrap").innerHTML =
+        '<div class="empty-state"><div class="icon">🔒</div>You need to be logged in to view this report.</div>';
+      return;
+    }
+
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    renderReport(data, date);
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("tableWrap").innerHTML =
+      `<div class="empty-state"><div class="icon">⚠️</div>Couldn't load the report: ${err.message}</div>`;
+  }
+}
+
+function renderReport(data, date) {
+  const isToday = date === todayStr();
+
+  document.getElementById("cardRevenue").innerText = fmtMoney(data.totalRevenue);
+  document.getElementById("cardRevenueSub").innerText = isToday ? "Earned today" : `Earned on ${date}`;
+  document.getElementById("cardQty").innerText = data.totalQuantitySold;
+  document.getElementById("cardTransactions").innerText = data.totalTransactions;
+  document.getElementById("cardTopSeller").innerText = data.topSeller || "—";
+  document.getElementById("cardTopSellerSub").innerText = data.topSeller
+    ? `${data.uniqueMedicinesSold} medicine type(s) sold`
+    : "No sales recorded";
+
+  document.getElementById("itemCount").innerText = `${data.items.length} item${data.items.length === 1 ? "" : "s"}`;
+
+  const wrap = document.getElementById("tableWrap");
+
+  if (!data.items.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="icon">📭</div>No sales recorded for this date.</div>`;
+    return;
+  }
+
+  let rows = data.items.map((item, i) => `
+    <tr>
+      <td><span class="rank-badge">${i + 1}</span>${item.medName}</td>
+      <td class="num">${item.qtySold}</td>
+      <td class="num">${item.transactions}</td>
+      <td class="num">${fmtMoney(item.revenue)}</td>
+    </tr>
+  `).join("");
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Medicine</th>
+          <th class="num">Qty Sold</th>
+          <th class="num">Transactions</th>
+          <th class="num">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function goToday() {
+  reportDateInput.value = todayStr();
+  loadReport();
+}
+
+function printReport() {
+  window.print();
+}
+
+reportDateInput.addEventListener("change", loadReport);
+
+// ── THEME ─────────────────────────────────────────────────
+function setTheme(mode) {
+  document.body.classList.toggle("light", mode === "light");
+  localStorage.setItem("theme", mode);
+  const label = mode === "light" ? "🌞" : "🌙";
+  const labelFull = mode === "light" ? "🌞 Light Mode" : "🌙 Dark Mode";
+  const d = document.getElementById("themeBtn");
+  const m = document.getElementById("themeBtnMobile");
+  if (d) d.innerText = labelFull;
+  if (m) m.innerText = label;
+}
+function toggleTheme() {
+  const current = localStorage.getItem("theme") || "dark";
+  setTheme(current === "dark" ? "light" : "dark");
+}
+setTheme(localStorage.getItem("theme") || "dark");
+
+// ── DRAWER ────────────────────────────────────────────────────────
+function toggleDrawer() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("drawerOverlay");
+  const burger  = document.getElementById("hamburger");
+  const isOpen  = sidebar.classList.contains("drawer-open");
+  if (isOpen) { closeDrawer(); } else {
+    sidebar.classList.add("drawer-open");
+    overlay.classList.add("open");
+    burger.classList.add("open");
+  }
+}
+function closeDrawer() {
+  document.querySelector(".sidebar").classList.remove("drawer-open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  document.getElementById("hamburger").classList.remove("open");
+}
+
+loadReport();
+</script>
+
+</body>
+</html>

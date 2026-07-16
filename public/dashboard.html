@@ -1,219 +1,1360 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MedTrack LK Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <style>
-        body {
-            font-family: Arial;
-            background: #f2f6ff;
-            padding: 20px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTrack LK - Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-        h1 {
-            text-align: center;
-        }
+/* ─── CSS VARIABLES ────────────────────────────────────────── */
+:root {
+  --bg:       #070d1a;
+  --panel:    #0c1528;
+  --panel2:   #111d35;
+  --border:   rgba(255,255,255,0.07);
+  --text:     #e8f0ff;
+  --muted:    #5a7299;
+  --green:    #00ffaa;
+  --blue:     #4db8ff;
+  --orange:   #ffb347;
+  --red:      #ff5e7a;
+  --purple:   #b57bff;
+}
 
-        .container {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 40px;
-        }
+body.light {
+  --bg:     #f0f4ff;
+  --panel:  #ffffff;
+  --panel2: #f7f9ff;
+  --border: rgba(0,0,0,0.08);
+  --text:   #0d1a33;
+  --muted:  #6b7c99;
+}
 
-        .card {
-            background: white;
-            padding: 20px;
-            width: 200px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px #ccc;
-            text-align: center;
-        }
+/* ─── RESET ─────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
 
-        .card a {
-            text-decoration: none;
-            display: block;
-            margin-top: 10px;
-            color: blue;
-        }
-        
+/* ─── AMBIENT BACKGROUND ─────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(0,255,170,0.06), transparent),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(77,184,255,0.06), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(181,123,255,0.04), transparent);
+  transition: opacity 0.3s;
+}
+
+body.light::before { opacity: 0.4; }
+
+/* ─── LAYOUT ─────────────────────────────────────────────────── */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── SIDEBAR ────────────────────────────────────────────────── */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed; left: 0; top: 0;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(12,21,40,0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+  transition: background 0.3s;
+  z-index: 100;
+}
+
+body.light .sidebar {
+  background: rgba(255,255,255,0.9);
+  border-right-color: rgba(0,0,0,0.08);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,255,170,0.06) 0%, rgba(77,184,255,0.03) 100%);
+  pointer-events: none;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.brand-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0,255,170,0.35);
+}
+
+.brand-text {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #fff;
+}
+
+body.light .brand-text { color: #0d1a33; }
+
+.brand-sub {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Nav */
+.nav-section {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 12px 10px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+body.light .nav-item { color: var(--muted); }
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  transform: translateX(3px);
+}
+
+body.light .nav-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: #0d1a33;
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(0,255,170,0.12), rgba(77,184,255,0.06));
+  color: #fff;
+  border-left: 2.5px solid #00ffaa;
+  padding-left: 9.5px;
+}
+
+body.light .nav-item.active {
+  background: linear-gradient(90deg, rgba(0,200,130,0.1), rgba(0,150,255,0.05));
+  color: #0d1a33;
+}
+
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--muted);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.nav-item.active .nav-dot {
+  background: #00ffaa;
+  box-shadow: 0 0 8px #00ffaa;
+}
+
+.nav-item.danger { color: #ff5e7a; margin-top: 8px; }
+.nav-item.danger:hover { background: rgba(255,94,122,0.1); color: #ff5e7a; transform: none; }
+
+/* Footer user chip */
+.nav-footer {
+  margin-top: auto;
+  padding: 14px 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+body.light .user-chip { background: rgba(0,0,0,0.03); }
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,255,170,0.2), rgba(77,184,255,0.2));
+  border: 1px solid rgba(0,255,170,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  color: #00ffaa; flex-shrink: 0;
+}
+
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 11px; color: var(--muted); }
+
+/* ─── MAIN ───────────────────────────────────────────────────── */
+.main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 20px 24px;
+}
+
+/* ─── TOPBAR ─────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(12,21,40,0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 22px;
+  transition: background 0.3s;
+}
+
+body.light .topbar { background: rgba(255,255,255,0.85); }
+
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+.topbar-title { font-size: 17px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--muted); }
+
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(0,255,170,0.08);
+  border: 1px solid rgba(0,255,170,0.22);
+  font-size: 12px; font-weight: 600;
+  color: #00ffaa;
+}
+
+body.light .status-pill { background: rgba(0,180,110,0.08); border-color: rgba(0,180,110,0.25); color: #00965a; }
+
+.pulse-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #00ffaa;
+  animation: pulse-anim 2s infinite;
+}
+
+body.light .pulse-dot { background: #00965a; }
+
+@keyframes pulse-anim {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,170,0.5); }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,255,170,0); }
+}
+
+.theme-btn {
+  padding: 7px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.theme-btn:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: var(--text);
+  background: rgba(255,255,255,0.08);
+}
+
+body.light .theme-btn { background: rgba(0,0,0,0.04); }
+body.light .theme-btn:hover { background: rgba(0,0,0,0.07); }
+
+/* ─── STAT CARDS ─────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+}
+
+body.light .stat-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.12);
+}
+
+/* Glow radial per color */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle at top right, var(--glow), transparent 70%);
+  pointer-events: none;
+}
+
+.stat-card[data-color="green"]  { --glow: rgba(0,255,170,0.10); }
+.stat-card[data-color="blue"]   { --glow: rgba(77,184,255,0.10); }
+.stat-card[data-color="orange"] { --glow: rgba(255,179,71,0.10); }
+.stat-card[data-color="red"]    { --glow: rgba(255,94,122,0.10); }
+.stat-card[data-color="purple"] { --glow: rgba(181,123,255,0.10); }
+
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+.stat-card[data-color="green"]  .stat-icon { background: rgba(0,255,170,0.10); border: 1px solid rgba(0,255,170,0.18); }
+.stat-card[data-color="blue"]   .stat-icon { background: rgba(77,184,255,0.10); border: 1px solid rgba(77,184,255,0.18); }
+.stat-card[data-color="orange"] .stat-icon { background: rgba(255,179,71,0.10); border: 1px solid rgba(255,179,71,0.18); }
+.stat-card[data-color="red"]    .stat-icon { background: rgba(255,94,122,0.10); border: 1px solid rgba(255,94,122,0.18); }
+.stat-card[data-color="purple"] .stat-icon { background: rgba(181,123,255,0.10); border: 1px solid rgba(181,123,255,0.18); }
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stat-card[data-color="green"]  .stat-value { color: #00ffaa; }
+.stat-card[data-color="blue"]   .stat-value { color: #4db8ff; }
+.stat-card[data-color="orange"] .stat-value { color: #ffb347; }
+.stat-card[data-color="red"]    .stat-value { color: #ff5e7a; }
+.stat-card[data-color="purple"] .stat-value { color: #b57bff; }
+
+body.light .stat-card[data-color="green"]  .stat-value { color: #00965a; }
+body.light .stat-card[data-color="blue"]   .stat-value { color: #1a80cc; }
+body.light .stat-card[data-color="orange"] .stat-value { color: #cc7a00; }
+body.light .stat-card[data-color="red"]    .stat-value { color: #cc2244; }
+body.light .stat-card[data-color="purple"] .stat-value { color: #7040cc; }
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stat-badge.up     { background: rgba(0,255,170,0.10); color: #00ffaa; }
+.stat-badge.warn   { background: rgba(255,179,71,0.10); color: #ffb347; }
+.stat-badge.danger { background: rgba(255,94,122,0.10); color: #ff5e7a; }
+.stat-badge.info   { background: rgba(181,123,255,0.10); color: #b57bff; }
+
+body.light .stat-badge.up     { background: rgba(0,150,90,0.10); color: #00965a; }
+body.light .stat-badge.warn   { background: rgba(200,120,0,0.10); color: #cc7a00; }
+body.light .stat-badge.danger { background: rgba(200,30,60,0.10); color: #cc2244; }
+body.light .stat-badge.info   { background: rgba(112,64,204,0.10); color: #7040cc; }
+
+/* ─── CRITICAL STRIP ─────────────────────────────────────────── */
+.critical-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(255,94,122,0.06);
+  border: 1px solid rgba(255,94,122,0.25);
+  margin-bottom: 18px;
+  animation: strip-flash 2s ease-in-out infinite;
+}
+
+@keyframes strip-flash {
+  0%, 100% { border-color: rgba(255,94,122,0.25); }
+  50%       { border-color: rgba(255,94,122,0.55); }
+}
+
+.critical-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #ff5e7a;
+  box-shadow: 0 0 10px #ff5e7a;
+  flex-shrink: 0;
+  animation: pulse-anim 1.5s infinite;
+}
+
+.critical-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff5e7a;
+  flex: 1;
+}
+
+/* ─── BOTTOM GRID ────────────────────────────────────────────── */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ─── BOX ────────────────────────────────────────────────────── */
+.box {
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  transition: background 0.3s;
+}
+
+.box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.box-title { font-size: 14px; font-weight: 700; }
+
+.box-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,179,71,0.10);
+  color: #ffb347;
+}
+
+body.light .box-badge { background: rgba(200,120,0,0.10); color: #cc7a00; }
+
+/* Alert items */
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.alert-item:last-child { margin-bottom: 0; }
+
+.alert-item.danger  { background: rgba(255,94,122,0.06);  border: 1px solid rgba(255,94,122,0.2);  color: #ffb3be; }
+.alert-item.warning { background: rgba(255,179,71,0.06);  border: 1px solid rgba(255,179,71,0.2);  color: #ffd080; }
+.alert-item.info    { background: rgba(77,184,255,0.06);  border: 1px solid rgba(77,184,255,0.2);  color: #a0d4ff; }
+.alert-item.ok      { background: rgba(0,255,170,0.05);   border: 1px solid rgba(0,255,170,0.18);  color: #7fffd4; }
+
+body.light .alert-item.danger  { background: rgba(200,30,60,0.05);  border-color: rgba(200,30,60,0.15);  color: #aa1133; }
+body.light .alert-item.warning { background: rgba(200,120,0,0.05);  border-color: rgba(200,120,0,0.15);  color: #8a5500; }
+body.light .alert-item.info    { background: rgba(20,130,200,0.05); border-color: rgba(20,130,200,0.15); color: #0a5585; }
+body.light .alert-item.ok      { background: rgba(0,140,90,0.05);   border-color: rgba(0,140,90,0.15);   color: #005a35; }
+
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── CHART ──────────────────────────────────────────────────── */
+.chart-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-canvas-wrap {
+  position: relative;
+  width: 210px; height: 210px;
+}
+
+#stockChart { width: 210px !important; height: 210px !important; }
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-val {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* ─── AI CHATBOT ─────────────────────────────────────────────── */
+#aiBtn {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 22px;
+  box-shadow: 0 4px 24px rgba(0,255,170,0.45);
+  z-index: 1000;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#aiBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 32px rgba(0,255,170,0.6);
+}
+
+#aiBox {
+  position: fixed;
+  bottom: 92px; right: 24px;
+  width: 360px; height: 520px;
+  background: #0c1528;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: none;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+body.light #aiBox {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+}
+
+#aiBox.open { display: flex; }
+
+.ai-header {
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  color: #070d1a;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.ai-header-icon {
+  width: 34px; height: 34px;
+  background: rgba(0,0,0,0.18);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.ai-header-info { flex: 1; }
+.ai-header-name { font-size: 14px; font-weight: 700; }
+.ai-header-sub  { font-size: 11px; opacity: 0.65; margin-top: 1px; }
+
+.ai-badge {
+  background: rgba(0,0,0,0.18);
+  font-size: 10px;
+  padding: 4px 9px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+#aiChat {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #070d1a;
+}
+
+body.light #aiChat { background: #f4f7ff; }
+
+#aiChat::-webkit-scrollbar { width: 4px; }
+#aiChat::-webkit-scrollbar-thumb { background: #1f2b45; border-radius: 4px; }
+
+.ai-msg {
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 84%;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  animation: msgIn 0.2s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ai-msg.user {
+  background: linear-gradient(135deg, #00ffaa, #00cc88);
+  color: #070d1a;
+  align-self: flex-end;
+  font-weight: 500;
+  border-bottom-right-radius: 4px;
+}
+
+.ai-msg.bot {
+  background: #0c1528;
+  color: #e8f0ff;
+  align-self: flex-start;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-bottom-left-radius: 4px;
+}
+
+body.light .ai-msg.bot {
+  background: #ffffff;
+  color: #0d1a33;
+  border-color: rgba(0,0,0,0.08);
+}
+
+.ai-welcome {
+  text-align: center;
+  color: #3d5270;
+  font-size: 13px;
+  padding: 24px 10px;
+  line-height: 1.8;
+}
+
+.ai-welcome-icon { font-size: 36px; margin-bottom: 8px; }
+
+.ai-quick-btns {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #0c1528;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+body.light .ai-quick-btns {
+  background: #ffffff;
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+.ai-quick-btn {
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #111d35;
+  color: #5a7299;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+body.light .ai-quick-btn {
+  background: #f4f7ff;
+  border-color: rgba(0,0,0,0.08);
+  color: #6b7c99;
+}
+
+.ai-quick-btn:hover {
+  border-color: #00ffaa;
+  color: #00ffaa;
+  background: rgba(0,255,170,0.06);
+}
+
+body.light .ai-quick-btn:hover {
+  border-color: #00965a;
+  color: #00965a;
+  background: rgba(0,150,90,0.06);
+}
+
+.ai-input-row {
+  display: flex;
+  padding: 10px 12px;
+  background: #0c1528;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+body.light .ai-input-row {
+  background: #ffffff;
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+#aiInput {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  outline: none;
+  background: #070d1a;
+  color: #e8f0ff;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s;
+}
+
+body.light #aiInput {
+  background: #f4f7ff;
+  color: #0d1a33;
+  border-color: rgba(0,0,0,0.1);
+}
+
+#aiInput::placeholder { color: #3d5270; }
+#aiInput:focus { border-color: #00ffaa; }
+body.light #aiInput:focus { border-color: #00965a; }
+
+#aiSend {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  color: #070d1a;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+#aiSend:hover { transform: scale(1.1); }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+/* ─── MOBILE TOP NAVBAR ──────────────────────────────────────── */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 12px 16px;
+  background: rgba(12,21,40,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body.light .mobile-nav {
+  background: rgba(255,255,255,0.95);
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-brand-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  box-shadow: 0 0 14px rgba(0,255,170,0.3);
+  flex-shrink: 0;
+}
+
+.mobile-brand-text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.mobile-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hamburger {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hamburger:hover { background: rgba(255,255,255,0.1); }
+
+body.light .hamburger { background: rgba(0,0,0,0.04); }
+body.light .hamburger:hover { background: rgba(0,0,0,0.08); }
+
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition: all 0.3s;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer overlay */
+.drawer-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+
+.drawer-overlay.open { display: block; }
+
+/* Mobile sidebar drawer */
+.sidebar.drawer-open {
+  transform: translateX(0) !important;
+  box-shadow: 4px 0 40px rgba(0,0,0,0.5);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .mobile-nav  { display: flex; }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    z-index: 200;
+  }
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 80px 14px 14px;
+  }
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 600px) {
-
-    body {
-        font-size: 14px;
-    }
-
-    h1, h2, h3 {
-        text-align: center;
-    }
-
-    a {
-        display: block;
-        margin: 10px 0;
-    }
-
-    .box {
-        width: 90% !important;
-    }
-
+  .stats-grid { grid-template-columns: 1fr; }
+  #aiBox { width: calc(100vw - 28px); right: 14px; }
 }
-
-button {
-    padding: 10px;
-    margin: 5px;
-    width: auto;
-}
-
-@media (max-width: 600px) {
-    button {
-        width: 100%;
-    }
-
-    input {
-        width: 100%;
-    }
-}
-
-    </style>
+</style>
 </head>
-
 <body>
 
-<h1>💊 MedTrack LK Dashboard</h1>
-<h2 style="text-align:center;">Welcome Admin 👨‍⚕️</h2>
-<div style="
-    display:flex;
-    justify-content:space-around;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:20px;
-">
+<!-- ── MOBILE TOP NAVBAR ───────────────────────────────────────── -->
+<nav class="mobile-nav">
+  <div class="mobile-brand">
+    <div class="mobile-brand-icon">💊</div>
+    <div class="mobile-brand-text">MedTrack LK</div>
+  </div>
+  <div class="mobile-right">
+    <div class="status-pill" style="padding:5px 10px;font-size:11px">
+      <div class="pulse-dot"></div> Active
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMobile" style="padding:6px 10px">🌙</button>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<div class="wrapper">
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">💊</div>
+      <div>
+        <div class="brand-text">MedTrack LK</div>
+        <div class="brand-sub">Pharmacy System</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Main Menu</div>
+    <a class="nav-item active" href="/dashboard.html">
+      <div class="nav-dot"></div> Dashboard
+      <span id="alertBadge" style="
+        display:none;
+        margin-left:auto;
+        background:#ff5e7a;
+        color:#fff;
+        font-size:11px;
+        font-weight:700;
+        padding:2px 8px;
+        border-radius:20px;
+        box-shadow:0 0 8px rgba(255,94,122,0.6);
+      "></span>
+    </a>
+    <a class="nav-item" href="/addMedicine.html"><div class="nav-dot"></div> Add Medicine</a>
+    <a class="nav-item" href="/viewMedicines.html"><div class="nav-dot"></div> Inventory</a>
+    <a class="nav-item" href="/billing.html"><div class="nav-dot"></div> Billing</a>
+    <a class="nav-item" href="/chatbot.html"><div class="nav-dot"></div> AI Chatbot</a>
+    <a class="nav-item" href="/dailyReport.html"><div class="nav-dot"></div> Daily Report</a>
     
-
-    <div style="margin:20px;">
-        <a href="/viewMedicines.html">📦 Inventory</a><br><br>
-        <a href="/billing.html">💰 Billing</a><br><br>
-        <a href="/chatbot.html">🤖 AI Chatbot</a><br><br>
+    <div class="nav-footer">
+      <div class="user-chip">
+        <div class="avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Pharmacist</div>
+        </div>
+      </div>
+      <a class="nav-item danger" href="/logout" style="margin-top:10px">
+        <div class="nav-dot" style="background:#ff5e7a"></div> Logout
+      </a>
     </div>
+  </div>
+
+  <!-- ── MAIN ─────────────────────────────────────────────────── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Dashboard Overview</div>
+        <div class="topbar-sub" id="dateStr">Loading…</div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill">
+          <div class="pulse-dot"></div> System Active
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" data-color="green">
+        <div class="stat-icon">💊</div>
+        <div class="stat-label">Total Medicines</div>
+        <div class="stat-value" id="totalMed">—</div>
+        <div class="stat-badge up">↑ In Stock</div>
+      </div>
+      <div class="stat-card" data-color="blue">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Total Sales</div>
+        <div class="stat-value" id="totalSales">—</div>
+        <div class="stat-badge up">↑ Today</div>
+      </div>
+      <div class="stat-card" data-color="orange">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-label">Low Stock</div>
+        <div class="stat-value" id="lowStock">—</div>
+        <div class="stat-badge warn">⚠ Reorder</div>
+      </div>
+      <div class="stat-card" data-color="red">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Expiring (7 Days)</div>
+        <div class="stat-value" id="expiring">—</div>
+        <div class="stat-badge danger">! Urgent</div>
+      </div>
+      <div class="stat-card" data-color="green">
+        <div class="stat-icon">💵</div>
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="totalRevenue" style="font-size:20px;letter-spacing:-0.5px">—</div>
+        <div class="stat-badge up">↑ This Month</div>
+      </div>
+      <div class="stat-card" data-color="purple">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">Most Sold</div>
+        <div class="stat-value" id="mostSold" style="font-size:17px;letter-spacing:-0.3px">—</div>
+        <div class="stat-badge info">Top Item</div>
+      </div>
+    </div>
+
+    <!-- Critical Strip -->
+    <div class="critical-strip" id="criticalStrip" style="display:none">
+      <div class="critical-dot"></div>
+      <div class="critical-text" id="criticalText">Loading…</div>
+    </div>
+
+    <!-- Bottom Grid: Alerts + Chart -->
+    <div class="bottom-grid">
+
+      <div class="box">
+        <div class="box-header">
+          <div class="box-title">⚠️ System Alerts</div>
+          <div class="box-badge" id="alertCount">Loading…</div>
+        </div>
+        <div id="alertList"></div>
+      </div>
+
+      <div class="box">
+        <div class="box-header">
+          <div class="box-title">📊 Stock Overview</div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-canvas-wrap">
+            <canvas id="stockChart"></canvas>
+          </div>
+          <div class="legend" id="chartLegend"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
-<div style="display:flex;justify-content:space-around;flex-wrap:wrap;margin-top:30px;">
 
-    <div style="
-    background:white;
-    padding:20px;
-    width:200px;
-    max-width:90%;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-    text-align:center;
-">
-        <h3>📦 Medicines</h3>
-        <h2 id="m1">0</h2>
+<!-- ── AI CHATBOT ──────────────────────────────────────────────── -->
+<button id="aiBtn" onclick="toggleAI()" title="MedTrack AI Assistant">🤖</button>
+
+<div id="aiBox">
+  <div class="ai-header">
+    <div class="ai-header-icon">💊</div>
+    <div class="ai-header-info">
+      <div class="ai-header-name">MedTrack AI</div>
+      <div class="ai-header-sub">Pharmacy Assistant</div>
     </div>
+    <div class="ai-badge">⚡ Offline</div>
+  </div>
 
-    <div style="
-    background:white;
-    padding:20px;
-    width:200px;
-    max-width:90%;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-    text-align:center;
-">
-        <h3>💰 Sales</h3>
-        <h2 id="m2">0</h2>
+  <div id="aiChat">
+    <div class="ai-welcome">
+      <div class="ai-welcome-icon">🤖</div>
+      <p>Hello! I'm your MedTrack pharmacy assistant.<br>Ask me about medicines, symptoms, or stock tips.</p>
     </div>
+  </div>
 
-    <div style="
-    background:white;
-    padding:20px;
-    width:200px;
-    max-width:90%;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-    text-align:center;
-">
-        <h3>⚠ Low Stock</h3>
-        <h2 id="m3">0</h2>
-    </div>
+  <div class="ai-quick-btns">
+    <button class="ai-quick-btn" onclick="aiQuickAsk('fever')">🌡 Fever</button>
+    <button class="ai-quick-btn" onclick="aiQuickAsk('pain')">💊 Pain</button>
+    <button class="ai-quick-btn" onclick="aiQuickAsk('cough')">🤧 Cough</button>
+    <button class="ai-quick-btn" onclick="aiQuickAsk('diabetes')">🩺 Diabetes</button>
+    <button class="ai-quick-btn" onclick="aiQuickAsk('low stock')">📦 Low Stock</button>
+    <button class="ai-quick-btn" onclick="aiQuickAsk('expiry')">⏳ Expiry</button>
+  </div>
 
-    <div style="
-    background:white;
-    padding:20px;
-    width:200px;
-    max-width:90%;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-    text-align:center;
-">>
-        <h3>⏳ Expiring</h3>
-        <h2 id="m4">0</h2>
-    </div>
-
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="Ask a medicine question…" />
+    <button id="aiSend" onclick="aiAsk()">➤</button>
+  </div>
 </div>
-<div class="container">
 
-    <div class="card">
-        <h3>➕ Add Medicine</h3>
-        <a href="/addMedicine.html">Open</a>
-    </div>
-
-    <div class="card">
-        <h3>📦 View Medicines</h3>
-        <a href="/viewMedicines.html">Open</a>
-    </div>
-
-    <div class="card">
-        <h3>⚠️ Expiry Alerts</h3>
-        <a href="/expiryAlerts.html">Open</a>
-    </div>
-
-    <div class="card">
-        <h3>📉 Low Stock</h3>
-        <a href="/lowStock.html">Open</a>
-    </div>
-
-</div>
-<h2>📊 Sales Overview</h2>
-<canvas id="salesChart" width="400" height="200"></canvas>
 <script>
-    fetch("/stats")
-    .then(res => res.json())
-    .then(data => {
-    
-        document.getElementById("m1").innerText = data.totalMedicines;
-        document.getElementById("m2").innerText = data.totalSales;
-        document.getElementById("m3").innerText = data.lowStock;
-        document.getElementById("m4").innerText = data.expiring;
-    
-    });
-    </script>
-<script>
+// ── DATE ─────────────────────────────────────────────────────────
+document.getElementById("dateStr").innerText =
+  new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-    fetch("/sales-summary")
-    .then(res => res.json())
-    .then(data => {
-    
-        const labels = data.map(item => item.medName);
-        const values = data.map(item => item.totalQty);
-    
-        new Chart(document.getElementById("salesChart"), {
-            type: "bar",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: "Medicines Sold",
-                    data: values
-                }]
-            }
-        });
-    
-    });
-    
-    </script>
+// ── THEME ─────────────────────────────────────────────────────────
+function setTheme(mode) {
+  document.body.classList.toggle("light", mode === "light");
+  localStorage.setItem("theme", mode);
+  const label = mode === "light" ? "🌞" : "🌙";
+  const labelFull = mode === "light" ? "🌞 Light Mode" : "🌙 Dark Mode";
+  const d = document.getElementById("themeBtn");
+  const m = document.getElementById("themeBtnMobile");
+  if (d) d.innerText = labelFull;
+  if (m) m.innerText = label;
+}
+
+function toggleTheme() {
+  const cur = localStorage.getItem("theme") || "dark";
+  setTheme(cur === "dark" ? "light" : "dark");
+}
+
+setTheme(localStorage.getItem("theme") || "dark");
+
+// ── DRAWER ────────────────────────────────────────────────────────
+function toggleDrawer() {
+  const sidebar  = document.querySelector(".sidebar");
+  const overlay  = document.getElementById("drawerOverlay");
+  const burger   = document.getElementById("hamburger");
+  const isOpen   = sidebar.classList.contains("drawer-open");
+  if (isOpen) { closeDrawer(); } else {
+    sidebar.classList.add("drawer-open");
+    overlay.classList.add("open");
+    burger.classList.add("open");
+  }
+}
+
+function closeDrawer() {
+  document.querySelector(".sidebar").classList.remove("drawer-open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  document.getElementById("hamburger").classList.remove("open");
+}
+
+// ── STATS & CHART ─────────────────────────────────────────────────
+let chartInstance = null;
+
+function applyStats(d) {
+  document.getElementById("totalMed").innerText     = d.totalMedicines ?? 0;
+  document.getElementById("totalSales").innerText   = d.totalSales     ?? 0;
+  document.getElementById("lowStock").innerText     = d.lowStock       ?? 0;
+  document.getElementById("expiring").innerText     = d.expiring       ?? 0;
+  document.getElementById("totalRevenue").innerText = "Rs " + (d.totalRevenue ?? 0).toLocaleString();
+  document.getElementById("mostSold").innerText     = d.mostSold       ?? "N/A";
+
+  // Critical strip
+  const issues = [];
+  if ((d.expired  ?? 0) > 0) issues.push(`🔴 ${d.expired} Expired`);
+  if ((d.critical ?? 0) > 0) issues.push(`⏳ ${d.critical} Critical`);
+  if ((d.warning  ?? 0) > 0) issues.push(`🟡 ${d.warning} Warning`);
+  if ((d.lowStock ?? 0) > 0) issues.push(`📦 ${d.lowStock} Low Stock`);
+
+  const strip = document.getElementById("criticalStrip");
+  if (issues.length > 0) {
+    strip.style.display = "flex";
+    document.getElementById("criticalText").innerText = "⚠  " + issues.join("   |   ");
+  } else {
+    strip.style.display = "none";
+  }
+
+  // Alerts
+  const list = document.getElementById("alertList");
+  list.innerHTML = "";
+  if ((d.expired  ?? 0) > 0) list.innerHTML += `<div class="alert-item danger"><span class="alert-icon">🔴</span>${d.expired} medicine(s) EXPIRED — remove from stock immediately.</div>`;
+  if ((d.critical ?? 0) > 0) list.innerHTML += `<div class="alert-item danger"><span class="alert-icon">⏳</span>${d.critical} medicine(s) expire within 7 days — urgent action needed.</div>`;
+  if ((d.warning  ?? 0) > 0) list.innerHTML += `<div class="alert-item warning"><span class="alert-icon">🟡</span>${d.warning} medicine(s) expire within 30 days — review soon.</div>`;
+  if ((d.lowStock ?? 0) > 0) list.innerHTML += `<div class="alert-item info"><span class="alert-icon">📦</span>${d.lowStock} medicine(s) are low in stock — consider reordering.</div>`;
+  if (!list.innerHTML)       list.innerHTML  = `<div class="alert-item ok"><span class="alert-icon">✅</span>No active alerts. Everything looks good!</div>`;
+
+  const totalAlerts = (d.expired ?? 0) + (d.critical ?? 0) + (d.warning ?? 0) + (d.lowStock ?? 0);
+  document.getElementById("alertCount").innerText = totalAlerts + " Active";
+
+  // Doughnut chart
+  const labels = ["Safe", "Expiring (7d)", "Expiring (30d)", "Expired", "Low Stock"];
+  const values = [d.safe ?? 0, d.critical ?? 0, d.warning ?? 0, d.expired ?? 0, d.lowStock ?? 0];
+  const colors = ["#00ffaa", "#ff5e7a", "#ffb347", "#cc1c3c", "#4db8ff"];
+
+  if (chartInstance) chartInstance.destroy();
+
+  const ctx = document.getElementById("stockChart").getContext("2d");
+  chartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: "#0c1528",
+        borderWidth: 3,
+        hoverBorderWidth: 0,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: "70%",
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#111d35",
+          borderColor: "rgba(255,255,255,0.1)",
+          borderWidth: 1,
+          titleColor: "#e8f0ff",
+          bodyColor: "#5a7299",
+          padding: 10,
+          cornerRadius: 10
+        }
+      }
+    }
+  });
+
+  // Custom legend
+  const leg = document.getElementById("chartLegend");
+  leg.innerHTML = "";
+  labels.forEach((lbl, i) => {
+    leg.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${colors[i]}"></div>
+        ${lbl}
+        <span class="legend-val">${values[i]}</span>
+      </div>`;
+  });
+}
+
+// ── FETCH STATS ───────────────────────────────────────────────────
+fetch("/stats")
+  .then(r => r.json())
+  .then(applyStats)
+  .catch(() => {
+    document.getElementById("alertList").innerHTML =
+      `<div class="alert-item danger"><span class="alert-icon">❌</span>Could not load stats. Check server connection.</div>`;
+    document.getElementById("alertCount").innerText = "Error";
+  });
+
+// ── AI KNOWLEDGE BASE ──────────────────────────────────────────────
+const aiKnowledge = [
+  { keys: ["fever","temperature","hot","pyrexia"],
+    reply: "🌡 Fever Guide:\n\n• Paracetamol (500mg) — every 4–6 hrs\n• Ibuprofen — if fever with body pain\n• Keep hydrated, rest well\n• Wet cloth on forehead\n\n⚠ See a doctor if:\n- Fever above 39°C (102°F)\n- Lasts more than 3 days\n- Child under 2 years old" },
+  { keys: ["cough","cold","sore throat","throat"],
+    reply: "🤧 Cough & Cold Guide:\n\n• Dry cough: Dextromethorphan syrup\n• Wet cough: Guaifenesin (expectorant)\n• Sore throat: Lozenges, warm salt water gargle\n• Antihistamines for allergic cough\n\nHome remedies:\n- Honey + warm water\n- Ginger tea\n- Steam inhalation\n\n⚠ See a doctor if cough lasts over 2 weeks." },
+  { keys: ["pain","headache","body ache","ache","hurt","migraine"],
+    reply: "💊 Pain Relief Guide:\n\n• Mild pain / Headache: Paracetamol 500mg\n• Inflammation / Joint pain: Ibuprofen 400mg\n• Migraine: Sumatriptan (prescription needed)\n• Muscle pain: Diclofenac gel (topical)\n\n⚠ Never exceed recommended dose.\n⚠ Ibuprofen — avoid on empty stomach." },
+  { keys: ["stomach","gastric","acidity","acid","ulcer","heartburn","indigestion"],
+    reply: "🫃 Stomach / Acidity Guide:\n\n• Antacids (Gelusil, Maalox) — quick relief\n• Omeprazole / Pantoprazole — long-term acid control\n• Domperidone — nausea and bloating\n• ORS — for dehydration from vomiting\n\nTips:\n- Eat smaller meals\n- Avoid spicy/oily food\n- Don't lie down after eating" },
+  { keys: ["diarrhea","loose motion","diarrhoea","loose stool"],
+    reply: "🚽 Diarrhea Guide:\n\n• ORS (Oral Rehydration Salts) — most important\n• Loperamide — reduces frequency\n• Zinc supplements — especially for children\n• Probiotics — to restore gut bacteria\n\n⚠ Seek help immediately if:\n- Blood in stool\n- High fever with diarrhea\n- No urination for 6+ hours" },
+  { keys: ["vomit","nausea","vomiting"],
+    reply: "🤢 Nausea / Vomiting Guide:\n\n• Domperidone — before meals\n• Ondansetron — for severe vomiting\n• ORS — to replace lost fluids\n\nTips:\n- Sip clear fluids slowly\n- Avoid solid food until nausea settles\n- Ginger tea helps mild nausea\n\n⚠ See a doctor if vomiting blood or lasts 24+ hours." },
+  { keys: ["allergy","allergic","rash","itching","itch","hives","urticaria"],
+    reply: "🌿 Allergy / Rash Guide:\n\n• Cetirizine / Loratadine — non-drowsy antihistamine\n• Chlorphenamine — causes drowsiness\n• Hydrocortisone cream — for skin rashes\n• Calamine lotion — for itching/redness\n\n⚠ Emergency if:\n- Swelling of face/throat\n- Difficulty breathing\n- Severe widespread rash" },
+  { keys: ["diabetes","sugar","blood sugar","insulin","glucose"],
+    reply: "🩺 Diabetes Medicines (General Info):\n\n• Metformin — most common first-line tablet\n• Glibenclamide / Glipizide — stimulates insulin\n• Insulin injections — for Type 1 or advanced Type 2\n• Empagliflozin — newer SGLT2 class\n\nPharmacy stock tips:\n- Always keep Metformin 500mg & 1000mg\n- Stock glucometer test strips\n- Keep ORS for hypoglycemia emergencies\n\n⚠ Always requires doctor prescription." },
+  { keys: ["blood pressure","hypertension","bp","pressure"],
+    reply: "❤️ Blood Pressure Medicines (General Info):\n\n• Amlodipine — calcium channel blocker\n• Losartan / Telmisartan — ARB class\n• Enalapril — ACE inhibitor\n• Atenolol — beta blocker\n\nPharmacy tips:\n- These are long-term daily medicines\n- Keep consistent brands in stock\n- Patients must never stop suddenly\n\n⚠ Always requires doctor prescription." },
+  { keys: ["antibiotic","infection","bacteria","bacterial"],
+    reply: "💉 Antibiotics (General Info):\n\n• Amoxicillin — throat, ear, chest infections\n• Azithromycin — respiratory infections\n• Ciprofloxacin — UTI, gut infections\n• Metronidazole — gut/dental infections\n\n⚠ Important rules:\n- Always complete the full course\n- Never take without prescription\n- Do NOT work on viral infections (cold/flu)" },
+  { keys: ["vitamin","supplement","deficiency","calcium","iron"],
+    reply: "💊 Vitamins & Supplements:\n\n• Vitamin C — immunity, antioxidant\n• Vitamin D3 — bone health\n• Calcium + D3 — bone density\n• Iron (Ferrous Sulphate) — for anaemia\n• Vitamin B12 — nerve health, energy\n• Zinc — immunity, wound healing\n• Folic Acid — essential in pregnancy\n\nTips:\n- Iron best on empty stomach\n- Calcium & Iron should NOT be taken together" },
+  { keys: ["sleep","insomnia","sleeping","can't sleep"],
+    reply: "😴 Sleep Issues:\n\n• Diphenhydramine — short-term mild insomnia\n• Melatonin — natural sleep hormone supplement\n• Prescription sleep aids — doctor's order only\n\nNon-medicine tips:\n- Fixed sleep schedule\n- No screens 1 hour before bed\n- Dark, cool room\n- Avoid caffeine after 3pm" },
+  { keys: ["wound","cut","injury","bleeding","antiseptic"],
+    reply: "🩹 Wound Care:\n\n• Clean wound with clean water first\n• Antiseptic: Povidone Iodine (Betadine)\n• Antibiotic cream: Neosporin / Bacitracin\n• Cover with sterile bandage\n\nPharmacy stock:\n- Various bandage sizes\n- Povidone iodine solution & cream\n- Sterile gauze, cotton, surgical tape\n\n⚠ Deep wounds or animal bites need immediate medical care." },
+  { keys: ["low stock","reorder","out of stock","stock"],
+    reply: "📦 Low Stock Management Tips:\n\n• Set reorder level at 10–15 units minimum\n• Order fast-moving medicines weekly\n• Keep 2–3 months supply of chronic meds\n• Track sales to predict demand\n\nMedTrack tip:\n- Check Low Stock alert on Dashboard\n- Filter inventory by quantity\n- Contact suppliers early — delivery takes days" },
+  { keys: ["expiry","expired","expiring","expiration"],
+    reply: "⏳ Expiry Management Tips:\n\n• FIFO rule — First In, First Out\n  (older stock in front, new at back)\n• Check expiry dates monthly\n• Flag medicines expiring in 30 days\n• Return expired stock to supplier if possible\n• Never sell expired medicines — it is illegal\n\nMedTrack tip:\n- Dashboard shows 7-day & 30-day expiry alerts\n- Remove expired medicines immediately" },
+  { keys: ["billing","invoice","bill","sale","payment"],
+    reply: "💰 Billing Tips:\n\n• Verify medicine name & quantity before billing\n• Double-check unit price\n• Issue receipt for every sale\n• Keep records for tax and audit\n\nMedTrack tip:\n- Use Billing page to process sales\n- PDF invoice auto-generated after each sale\n- Total Revenue updates on Dashboard" },
+  { keys: ["storage","store","temperature","refrigerate","fridge"],
+    reply: "🌡 Medicine Storage Guide:\n\n• Room temp (15–25°C): Most tablets & capsules\n• Cool & dry: Away from sunlight and moisture\n• Refrigerated (2–8°C): Insulin, vaccines, eye drops\n\nGeneral rules:\n- Never store in bathroom (humidity)\n- Keep away from children\n- Keep in original packaging\n- Discard if colour/smell changes" },
+  { keys: ["hello","hi","hey","good morning","good afternoon","good evening"],
+    reply: "👋 Hello! Welcome to MedTrack AI.\n\nI can help you with:\n💊 Medicine information\n🌡 Symptom-based guidance\n📦 Stock & inventory tips\n⏳ Expiry management\n\nJust type your question or tap a quick button!" },
+  { keys: ["thank","thanks","thank you"],
+    reply: "😊 You're welcome! Feel free to ask anything else about medicines or pharmacy management." },
+  { keys: ["help","what can you do","what do you know"],
+    reply: "🤖 I can help with:\n\nSymptoms & Medicines:\n• Fever, Cough, Cold, Pain\n• Stomach issues, Diarrhea, Vomiting\n• Allergies, Diabetes, Blood Pressure\n• Antibiotics, Vitamins, Wound care\n\nPharmacy Management:\n• Low stock & reordering tips\n• Expiry date management\n• Billing & invoice guidance\n• Medicine storage rules\n\nJust type your question!" }
+];
+
+function aiGetReply(msg) {
+  const lower = msg.toLowerCase();
+  for (const item of aiKnowledge) {
+    if (item.keys.some(k => lower.includes(k))) return item.reply;
+  }
+  return "🤔 I'm not sure about that.\n\nI can help with:\n• Fever, cough, pain, stomach issues\n• Diabetes, blood pressure, allergies\n• Antibiotics, vitamins, wound care\n• Stock management & expiry tips\n\nTry rephrasing or tap a quick button below!";
+}
+
+function aiAddMsg(text, type) {
+  const chat = document.getElementById("aiChat");
+  const div  = document.createElement("div");
+  div.className = `ai-msg ${type}`;
+  div.innerText = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function aiAsk() {
+  const input = document.getElementById("aiInput");
+  const msg   = input.value.trim();
+  if (!msg) return;
+  aiAddMsg(msg, "user");
+  input.value = "";
+  setTimeout(() => aiAddMsg(aiGetReply(msg), "bot"), 320);
+}
+
+function aiQuickAsk(topic) {
+  document.getElementById("aiInput").value = topic;
+  aiAsk();
+}
+
+document.getElementById("aiInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") aiAsk();
+});
+
+function toggleAI() {
+  document.getElementById("aiBox").classList.toggle("open");
+}
+
+
+
+fetch("/email-status")
+  .then(r => r.json())
+  .then(data => {
+    if (data.count > 0) {
+      const alertList = document.getElementById("alertList");
+      const div = document.createElement("div");
+      div.className = "alert-item ok";
+      div.innerHTML = `
+        <span class="alert-icon">✅</span>
+        Alert emails sent to ${data.count} medicines
+        <span style="color:#5a7299;font-size:11px;margin-left:8px">
+          ${new Date(data.sentAt).toLocaleString("en-GB")}
+        </span>`;
+      alertList.prepend(div);
+    }
+  });
+</script>
 
 </body>
-
-
-
 </html>

@@ -1,65 +1,640 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Medicine</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            text-align: center;
-            padding-top: 40px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTrack LK - Add Medicine</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-        .box {
-            background: white;
-            width: 400px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px gray;
-        }
+:root {
+  --bg:       #070d1a;
+  --panel:    #0c1528;
+  --panel2:   #111d35;
+  --border:   rgba(255,255,255,0.07);
+  --text:     #e8f0ff;
+  --muted:    #5a7299;
+  --green:    #00ffaa;
+  --blue:     #4db8ff;
+  --orange:   #ffb347;
+  --red:      #ff5e7a;
+  --purple:   #b57bff;
+}
+body.light {
+  --bg:     #f0f4ff;
+  --panel:  #ffffff;
+  --panel2: #f7f9ff;
+  --border: rgba(0,0,0,0.08);
+  --text:   #0d1a33;
+  --muted:  #6b7c99;
+}
 
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-        }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg); color: var(--text);
+  overflow-x: hidden; min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(0,255,170,0.06), transparent),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(77,184,255,0.06), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(181,123,255,0.04), transparent);
+  transition: opacity 0.3s;
+}
+body.light::before { opacity: 0.4; }
 
-        button {
-            width: 95%;
-            padding: 10px;
-            background: green;
-            color: white;
-            border: none;
-        }
-    </style>
+.wrapper { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; height: 100vh;
+  position: fixed; left: 0; top: 0;
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  background: rgba(12,21,40,0.75);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  overflow: hidden; transition: background 0.3s; z-index: 100;
+}
+body.light .sidebar { background: rgba(255,255,255,0.9); border-right-color: rgba(0,0,0,0.08); }
+.sidebar::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,255,170,0.06) 0%, rgba(77,184,255,0.03) 100%);
+  pointer-events: none;
+}
+.brand { display: flex; align-items: center; gap: 12px; padding: 4px 10px 20px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.brand-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #00ffaa, #4db8ff); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 0 20px rgba(0,255,170,0.35); }
+.brand-text { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #fff; }
+body.light .brand-text { color: #0d1a33; }
+.brand-sub { font-size: 10px; color: var(--muted); margin-top: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.nav-section { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 10px 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: rgba(255,255,255,0.6); font-size: 13.5px; font-weight: 500; transition: all 0.2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+body.light .nav-item { color: var(--muted); }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; transform: translateX(3px); }
+body.light .nav-item:hover { background: rgba(0,0,0,0.04); color: #0d1a33; }
+.nav-item.active { background: linear-gradient(90deg, rgba(0,255,170,0.12), rgba(77,184,255,0.06)); color: #fff; border-left: 2.5px solid #00ffaa; padding-left: 9.5px; }
+body.light .nav-item.active { background: linear-gradient(90deg, rgba(0,200,130,0.1), rgba(0,150,255,0.05)); color: #0d1a33; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--muted); transition: background 0.2s, box-shadow 0.2s; }
+.nav-item.active .nav-dot { background: #00ffaa; box-shadow: 0 0 8px #00ffaa; }
+.nav-item.danger { color: #ff5e7a; margin-top: 8px; }
+.nav-item.danger:hover { background: rgba(255,94,122,0.1); color: #ff5e7a; transform: none; }
+.nav-footer { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid var(--border); }
+.user-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+body.light .user-chip { background: rgba(0,0,0,0.03); }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,255,170,0.2), rgba(77,184,255,0.2)); border: 1px solid rgba(0,255,170,0.3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #00ffaa; flex-shrink: 0; }
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 11px; color: var(--muted); }
+
+/* MAIN */
+.main { margin-left: 240px; width: calc(100% - 240px); padding: 20px 24px; }
+
+/* TOPBAR */
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(12,21,40,0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 22px; transition: background 0.3s; }
+body.light .topbar { background: rgba(255,255,255,0.85); }
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+.topbar-title { font-size: 17px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--muted); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.status-pill { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: rgba(0,255,170,0.08); border: 1px solid rgba(0,255,170,0.22); font-size: 12px; font-weight: 600; color: #00ffaa; }
+body.light .status-pill { background: rgba(0,180,110,0.08); border-color: rgba(0,180,110,0.25); color: #00965a; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ffaa; animation: pulse-anim 2s infinite; }
+body.light .pulse-dot { background: #00965a; }
+@keyframes pulse-anim { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,170,0.5)} 50%{opacity:.8;box-shadow:0 0 0 6px rgba(0,255,170,0)} }
+.theme-btn { padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--muted); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.theme-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: rgba(255,255,255,0.08); }
+body.light .theme-btn { background: rgba(0,0,0,0.04); }
+body.light .theme-btn:hover { background: rgba(0,0,0,0.07); }
+
+/* BOX */
+.box { padding: 24px 28px; border-radius: 16px; border: 1px solid var(--border); background: var(--panel); transition: background 0.3s; }
+
+/* FORM LAYOUT */
+.form-container { display: flex; gap: 16px; align-items: flex-start; }
+.form-box { flex: 1; }
+.form-box-header { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.form-box-icon { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, #00ffaa, #4db8ff); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 18px rgba(0,255,170,0.25); flex-shrink: 0; }
+.form-box-header h2 { font-size: 18px; font-weight: 700; }
+.form-box-header p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* FIELDS */
+.field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.field-group.single { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.field input {
+  padding: 11px 14px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 14px;
+  font-family: 'Inter', sans-serif; outline: none; transition: 0.2s; width: 100%;
+}
+.field input:focus { border-color: #00ffaa; box-shadow: 0 0 0 3px rgba(0,255,170,0.1); }
+.field input::placeholder { color: var(--muted); opacity: 0.6; }
+.field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+body.light .field input[type="date"]::-webkit-calendar-picker-indicator { filter: none; }
+
+.price-tag { position: relative; }
+.price-tag span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; font-weight: 600; pointer-events: none; }
+.price-tag input { padding-left: 36px !important; }
+
+/* ── IMAGE UPLOAD ──────────────────────────────────────────── */
+.img-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.25s;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.img-upload-zone:hover,
+.img-upload-zone.drag-over {
+  border-color: #b57bff;
+  background: rgba(181,123,255,0.06);
+}
+.img-upload-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+
+/* empty state */
+.img-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--muted); pointer-events: none;
+}
+.img-placeholder .upload-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(181,123,255,0.10);
+  border: 1px solid rgba(181,123,255,0.22);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 2px;
+}
+.img-placeholder strong { font-size: 13px; font-weight: 600; color: var(--text); }
+.img-placeholder small { font-size: 11px; }
+
+/* preview state */
+.img-preview-wrap { display: none; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
+.img-preview-wrap img {
+  max-height: 150px; max-width: 100%;
+  border-radius: 10px; border: 1px solid var(--border);
+  object-fit: contain; display: block;
+}
+.img-preview-name { font-size: 12px; color: var(--muted); }
+.img-remove-btn {
+  pointer-events: all;
+  padding: 5px 14px; border-radius: 8px; border: none;
+  background: rgba(255,94,122,0.10); color: #ff5e7a;
+  border: 1px solid rgba(255,94,122,0.28);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: 0.2s;
+}
+.img-remove-btn:hover { background: rgba(255,94,122,0.20); }
+
+/* SUBMIT */
+.submit-btn {
+  width: 100%; padding: 13px; margin-top: 22px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  color: #070d1a; border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.25s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 24px rgba(0,255,170,0.25);
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,255,170,0.4); }
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* TIPS PANEL */
+.tips-panel { width: 250px; display: flex; flex-direction: column; gap: 14px; flex-shrink: 0; height: fit-content; position: sticky; top: 20px; }
+.tip-card { padding: 18px; }
+.tip-card h4 { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.tip-item { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.tip-item:last-child { border: none; }
+.tip-card.accent-green { border-left: 2.5px solid #00ffaa; }
+.tip-card.accent-orange { border-left: 2.5px solid #ffb347; }
+.tip-card.accent-purple { border-left: 2.5px solid #b57bff; }
+
+/* TOAST */
+#toast {
+  position: fixed; top: 24px; right: 24px; min-width: 280px;
+  background: #061f16; border: 1px solid #00ffaa; border-radius: 14px;
+  padding: 0; z-index: 9999; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  overflow: hidden; display: none; flex-direction: column;
+}
+#toast.show { display: flex; animation: toastIn 0.3s ease; }
+#toast.error { background: #1f0606; border-color: #ff5e7a; }
+@keyframes toastIn { from{transform:translateX(100px);opacity:0} to{transform:translateX(0);opacity:1} }
+.toast-body { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.toast-icon { font-size: 20px; flex-shrink: 0; }
+.toast-text strong { display: block; font-size: 14px; font-weight: 700; color: #00ffaa; }
+.toast-text small { display: block; font-size: 12px; color: #5a7299; margin-top: 2px; }
+#toast.error .toast-text strong { color: #ff5e7a; }
+.toast-bar { height: 3px; background: #00ffaa; width: 100%; transform-origin: left; }
+#toast.error .toast-bar { background: #ff5e7a; }
+@keyframes drainBar { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+
+/* MOBILE NAV */
+.mobile-nav {
+  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 12px 16px; background: rgba(12,21,40,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+body.light .mobile-nav { background: rgba(255,255,255,0.95); }
+.mobile-brand { display: flex; align-items: center; gap: 10px; }
+.mobile-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #00ffaa, #4db8ff); display: flex; align-items: center; justify-content: center; font-size: 17px; box-shadow: 0 0 14px rgba(0,255,170,0.3); flex-shrink: 0; }
+.mobile-brand-text { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+.mobile-right { display: flex; align-items: center; gap: 8px; }
+.hamburger { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; transition: background 0.2s; }
+.hamburger:hover { background: rgba(255,255,255,0.1); }
+body.light .hamburger { background: rgba(0,0,0,0.04); }
+.hamburger span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(2px); }
+.drawer-overlay.open { display: block; }
+.sidebar.drawer-open { transform: translateX(0) !important; box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
+
+@media (max-width: 900px) {
+  .mobile-nav { display: flex; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 200; }
+  .main { margin-left: 0; width: 100%; padding: 80px 14px 14px; }
+  .form-container { flex-direction: column; }
+  .tips-panel { width: 100%; position: static; }
+}
+@media (max-width: 600px) { .field-group { grid-template-columns: 1fr; } }
+</style>
 </head>
-
 <body>
 
-<div class="box">
-    <h2>💊 Add Medicine</h2>
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <div class="mobile-brand">
+    <div class="mobile-brand-icon">💊</div>
+    <div class="mobile-brand-text">MedTrack LK</div>
+  </div>
+  <div class="mobile-right">
+    <div class="status-pill" style="padding:5px 10px;font-size:11px">
+      <div class="pulse-dot"></div> Active
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMobile" style="padding:6px 10px">🌙</button>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
 
-    <form action="/addMedicine" method="POST">
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
-        <input type="text" name="medName" placeholder="Medicine Name" required>
-    
-        <input type="text" name="batchNo" placeholder="Batch Number" required>
-    
-        <input type="number" name="quantity" placeholder="Quantity" required>
-    
-        <input type="date" name="expiryDate" required>
-    
-        <input type="number" name="buyPrice" placeholder="Buy Price" required>
-    
-        <input type="number" name="sellPrice" placeholder="Sell Price" required>
-    
-        <button type="submit">Save Medicine</button>
-    
-    </form>
+<div class="wrapper">
 
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">💊</div>
+      <div>
+        <div class="brand-text">MedTrack LK</div>
+        <div class="brand-sub">Pharmacy System</div>
+      </div>
+    </div>
+    <div class="nav-section">Main Menu</div>
+    <a class="nav-item" href="/dashboard.html"><div class="nav-dot"></div> Dashboard</a>
+    <a class="nav-item active" href="/addMedicine.html"><div class="nav-dot"></div> Add Medicine</a>
+    <a class="nav-item" href="/viewMedicines.html"><div class="nav-dot"></div> Inventory</a>
+    <a class="nav-item" href="/billing.html"><div class="nav-dot"></div> Billing</a>
+    <a class="nav-item" href="/chatbot.html"><div class="nav-dot"></div> AI Chatbot</a>
+    <a class="nav-item" href="/dailyReport.html"><div class="nav-dot"></div> Daily Report</a>
+    <div class="nav-footer">
+      <div class="user-chip">
+        <div class="avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Pharmacist</div>
+        </div>
+      </div>
+      <a class="nav-item danger" href="/logout" style="margin-top:10px">
+        <div class="nav-dot" style="background:#ff5e7a"></div> Logout
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Add New Medicine</div>
+        <div class="topbar-sub" id="dateStr">Loading…</div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill"><div class="pulse-dot"></div> System Active</div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <div class="form-container">
+
+      <!-- FORM -->
+      <div class="box form-box">
+        <div class="form-box-header">
+          <div class="form-box-icon">💊</div>
+          <div>
+            <h2>Add New Medicine</h2>
+            <p>Fill in the details to add stock to inventory</p>
+          </div>
+        </div>
+
+        <form id="medForm">
+
+          <div class="field-group single">
+            <div class="field">
+              <label>Medicine Name</label>
+              <input type="text" name="medName" placeholder="e.g. Paracetamol 500mg" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field">
+              <label>Batch Number</label>
+              <input type="text" name="batchNo" placeholder="e.g. BT-20241" required>
+            </div>
+            <div class="field">
+              <label>Quantity</label>
+              <input type="number" name="quantity" placeholder="e.g. 100" min="1" required>
+            </div>
+          </div>
+
+          <div class="field-group single">
+            <div class="field">
+              <label>Expiry Date</label>
+              <input type="date" name="expiryDate" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field">
+              <label>Buy Price (Rs)</label>
+              <div class="price-tag">
+                <span>Rs</span>
+                <input type="number" name="buyPrice" placeholder="0.00" step="0.01" min="0" required>
+              </div>
+            </div>
+            <div class="field">
+              <label>Sell Price (Rs)</label>
+              <div class="price-tag">
+                <span>Rs</span>
+                <input type="number" name="sellPrice" placeholder="0.00" step="0.01" min="0" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- IMAGE UPLOAD -->
+          <div class="field-group single" style="margin-bottom:0">
+            <div class="field">
+              <label>Medicine Image <span style="color:var(--purple);font-size:10px;text-transform:none;letter-spacing:0">(optional)</span></label>
+              <div class="img-upload-zone" id="uploadZone"
+                   ondragover="handleDragOver(event)"
+                   ondragleave="handleDragLeave(event)"
+                   ondrop="handleDrop(event)">
+                <input type="file" id="imgInput" name="image" accept="image/*" onchange="handleFileSelect(event)">
+
+                <!-- Empty state -->
+                <div class="img-placeholder" id="imgPlaceholder">
+                  <div class="upload-icon">🖼️</div>
+                  <strong>Click or drag an image here</strong>
+                  <small>JPG, PNG, WEBP — max 5 MB</small>
+                </div>
+
+                <!-- Preview state -->
+                <div class="img-preview-wrap" id="imgPreviewWrap">
+                  <img id="imgPreview" src="" alt="Preview">
+                  <span class="img-preview-name" id="imgPreviewName"></span>
+                  <button type="button" class="img-remove-btn" onclick="removeImage()">✕ Remove</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" id="saveBtn" class="submit-btn">
+            💾 Save Medicine to Inventory
+          </button>
+
+        </form>
+      </div>
+
+      <!-- TIPS -->
+      <div class="tips-panel">
+        <div class="box tip-card">
+          <h4>📋 Field Guide</h4>
+          <div class="tip-item"><span>💊</span><span>Use the full medicine name including dosage (e.g. <em>Amoxicillin 500mg</em>)</span></div>
+          <div class="tip-item"><span>🔢</span><span>Batch number should match the label on the packaging</span></div>
+          <div class="tip-item"><span>📅</span><span>Set expiry date exactly as printed — alerts are based on this</span></div>
+          <div class="tip-item"><span>💰</span><span>Sell price must be higher than buy price to ensure profit</span></div>
+        </div>
+        <div class="box tip-card accent-purple">
+          <h4>🖼️ Image Tips</h4>
+          <div class="tip-item"><span>📸</span><span>Photo helps staff quickly identify medicines at a glance</span></div>
+          <div class="tip-item"><span>📦</span><span>Photograph the box or blister pack with the label visible</span></div>
+          <div class="tip-item"><span>📐</span><span>Square images work best — max 5 MB, JPG or PNG</span></div>
+        </div>
+        <div class="box tip-card accent-green">
+          <h4>✅ All Fields Required</h4>
+          <div class="tip-item"><span>⚠️</span><span>All 6 fields must be filled before saving</span></div>
+          <div class="tip-item"><span>📦</span><span>Low stock alert triggers when quantity drops to 5 or below</span></div>
+          <div class="tip-item"><span>⏳</span><span>Expiry alerts appear on Dashboard 30 days before expiry</span></div>
+        </div>
+        <div class="box tip-card accent-orange">
+          <h4>💡 Storage Reminder</h4>
+          <div class="tip-item"><span>🌡</span><span>Store tablets at 15–25°C away from sunlight</span></div>
+          <div class="tip-item"><span>❄️</span><span>Insulin & vaccines need refrigeration (2–8°C)</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
+<!-- TOAST -->
+<div id="toast">
+  <div class="toast-body">
+    <span class="toast-icon" id="toastIcon">✅</span>
+    <div class="toast-text">
+      <strong id="toastTitle">Saved!</strong>
+      <small id="toastSub">Medicine added to inventory.</small>
+    </div>
+  </div>
+  <div class="toast-bar" id="toastBar"></div>
+</div>
+
+<script>
+// ── DATE ──────────────────────────────────────────────────────
+document.getElementById("dateStr").innerText =
+  new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// ── THEME ─────────────────────────────────────────────────────
+function setTheme(mode) {
+  document.body.classList.toggle("light", mode === "light");
+  localStorage.setItem("theme", mode);
+  const d  = document.getElementById("themeBtn");
+  const mb = document.getElementById("themeBtnMobile");
+  if (d)  d.innerText  = mode === "light" ? "🌞 Light Mode" : "🌙 Dark Mode";
+  if (mb) mb.innerText = mode === "light" ? "🌞" : "🌙";
+}
+function toggleTheme() { setTheme((localStorage.getItem("theme")||"dark")==="dark"?"light":"dark"); }
+setTheme(localStorage.getItem("theme") || "dark");
+
+// ── DRAWER ────────────────────────────────────────────────────
+function toggleDrawer() {
+  const s = document.querySelector(".sidebar");
+  const o = document.getElementById("drawerOverlay");
+  const b = document.getElementById("hamburger");
+  s.classList.contains("drawer-open") ? closeDrawer() : (
+    s.classList.add("drawer-open"), o.classList.add("open"), b.classList.add("open")
+  );
+}
+function closeDrawer() {
+  document.querySelector(".sidebar").classList.remove("drawer-open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  document.getElementById("hamburger").classList.remove("open");
+}
+
+// ── IMAGE UPLOAD ──────────────────────────────────────────────
+let selectedFile = null;
+
+function showPreview(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    showToast(false, "Invalid File", "Please select an image file (JPG, PNG, WEBP).");
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast(false, "File Too Large", "Image must be 5 MB or smaller.");
+    return;
+  }
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById("imgPreview").src = e.target.result;
+    document.getElementById("imgPreviewName").textContent = file.name + " (" + (file.size/1024).toFixed(0) + " KB)";
+    document.getElementById("imgPlaceholder").style.display  = "none";
+    document.getElementById("imgPreviewWrap").style.display  = "flex";
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleFileSelect(e) {
+  if (e.target.files[0]) showPreview(e.target.files[0]);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById("uploadZone").classList.add("drag-over");
+}
+function handleDragLeave(e) {
+  document.getElementById("uploadZone").classList.remove("drag-over");
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById("uploadZone").classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    // Sync to file input so FormData picks it up
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById("imgInput").files = dt.files;
+    showPreview(file);
+  }
+}
+
+function removeImage() {
+  selectedFile = null;
+  document.getElementById("imgInput").value = "";
+  document.getElementById("imgPreview").src = "";
+  document.getElementById("imgPreviewName").textContent = "";
+  document.getElementById("imgPlaceholder").style.display  = "flex";
+  document.getElementById("imgPreviewWrap").style.display  = "none";
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+var toastTimer;
+function showToast(isSuccess, title, sub) {
+  var t   = document.getElementById("toast");
+  var bar = document.getElementById("toastBar");
+  document.getElementById("toastIcon").innerText  = isSuccess ? "✅" : "❌";
+  document.getElementById("toastTitle").innerText = title;
+  document.getElementById("toastSub").innerText   = sub;
+  t.className = isSuccess ? "show" : "show error";
+  bar.style.animation = "none";
+  bar.offsetHeight;
+  bar.style.animation = "drainBar 3s linear forwards";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.className = ""; }, 3200);
+}
+
+// ── SAVE ──────────────────────────────────────────────────────
+document.getElementById("saveBtn").addEventListener("click", function() {
+  var form   = document.getElementById("medForm");
+  var btn    = document.getElementById("saveBtn");
+  var inputs = form.querySelectorAll("input[required]");
+
+  for (var i = 0; i < inputs.length; i++) {
+    if (!inputs[i].value.trim()) {
+      inputs[i].focus();
+      showToast(false, "Missing Field", "Please fill in all required fields.");
+      return;
+    }
+  }
+
+  // Build FormData — supports both text fields and the optional image file
+  var fd = new FormData();
+  var fields = ["medName","batchNo","quantity","expiryDate","buyPrice","sellPrice"];
+  fields.forEach(function(name) {
+    var el = form.querySelector("[name=" + name + "]");
+    if (el) fd.append(name, el.value);
+  });
+
+  var imgInput = document.getElementById("imgInput");
+  if (imgInput.files && imgInput.files[0]) {
+    fd.append("image", imgInput.files[0]);
+  }
+
+  btn.disabled  = true;
+  btn.innerText = "⏳ Saving...";
+
+  fetch("/addMedicine", {
+    method: "POST",
+    credentials: "include",
+    body: fd   // no Content-Type — browser sets multipart boundary automatically
+  })
+  .then(function(r) { return r.text(); })
+  .then(function(text) {
+    // Accept either a plain-text "ok" reply or JSON {success:true}
+    var ok = text.indexOf("Error") === -1 && text.indexOf("error") === -1;
+    try {
+      var json = JSON.parse(text);
+      ok = json.success === true;
+    } catch(e) {}
+
+    if (ok) {
+      showToast(true, "Medicine Saved!", "Stock has been added to inventory.");
+      form.reset();
+      removeImage();
+    } else {
+      showToast(false, "Save Failed", "Database error — please try again.");
+    }
+  })
+  .catch(function() {
+    showToast(false, "Network Error", "Could not reach the server.");
+  })
+  .finally(function() {
+    btn.disabled  = false;
+    btn.innerText = "💾 Save Medicine to Inventory";
+  });
+});
+</script>
 </body>
 </html>

@@ -1,108 +1,1115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Medicines</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            padding: 30px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTrack LK - Inventory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-        table {
-            width: 100%;
-            background: white;
-            border-collapse: collapse;
-        }
+:root {
+  --bg:       #070d1a;
+  --panel:    #0c1528;
+  --panel2:   #111d35;
+  --border:   rgba(255,255,255,0.07);
+  --text:     #e8f0ff;
+  --muted:    #5a7299;
+  --green:    #00ffaa;
+  --blue:     #4db8ff;
+  --orange:   #ffb347;
+  --red:      #ff5e7a;
+  --purple:   #b57bff;
+}
 
-        th, td {
-            border: 1px solid gray;
-            padding: 10px;
-            text-align: center;
-        }
+body.light {
+  --bg:     #f0f4ff;
+  --panel:  #ffffff;
+  --panel2: #f7f9ff;
+  --border: rgba(0,0,0,0.08);
+  --text:   #0d1a33;
+  --muted:  #6b7c99;
+}
 
-        th {
-            background: green;
-            color: white;
-        }
-    </style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%, rgba(0,255,170,0.06), transparent),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(77,184,255,0.06), transparent),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(181,123,255,0.04), transparent);
+  transition: opacity 0.3s;
+}
+body.light::before { opacity: 0.4; }
+
+.wrapper { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+.sidebar {
+  width: 240px; height: 100vh;
+  position: fixed; left: 0; top: 0;
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  background: rgba(12,21,40,0.75);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  overflow: hidden; transition: background 0.3s; z-index: 100;
+}
+body.light .sidebar { background: rgba(255,255,255,0.9); border-right-color: rgba(0,0,0,0.08); }
+
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,255,170,0.06) 0%, rgba(77,184,255,0.03) 100%);
+  pointer-events: none;
+}
+
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  padding: 4px 10px 20px;
+  border-bottom: 1px solid var(--border); margin-bottom: 8px;
+}
+.brand-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0,255,170,0.35);
+}
+.brand-text { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #fff; }
+body.light .brand-text { color: #0d1a33; }
+.brand-sub { font-size: 10px; color: var(--muted); margin-top: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+.nav-section { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 10px 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  text-decoration: none; color: rgba(255,255,255,0.6);
+  font-size: 13.5px; font-weight: 500; transition: all 0.2s;
+  cursor: pointer; border: none; background: none;
+  width: 100%; text-align: left; position: relative;
+}
+body.light .nav-item { color: var(--muted); }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; transform: translateX(3px); }
+body.light .nav-item:hover { background: rgba(0,0,0,0.04); color: #0d1a33; }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(0,255,170,0.12), rgba(77,184,255,0.06));
+  color: #fff; border-left: 2.5px solid #00ffaa; padding-left: 9.5px;
+}
+body.light .nav-item.active { background: linear-gradient(90deg, rgba(0,200,130,0.1), rgba(0,150,255,0.05)); color: #0d1a33; }
+
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--muted); transition: background 0.2s, box-shadow 0.2s; }
+.nav-item.active .nav-dot { background: #00ffaa; box-shadow: 0 0 8px #00ffaa; }
+.nav-item.danger { color: #ff5e7a; margin-top: 8px; }
+.nav-item.danger:hover { background: rgba(255,94,122,0.1); color: #ff5e7a; transform: none; }
+
+.nav-footer { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid var(--border); }
+.user-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+}
+body.light .user-chip { background: rgba(0,0,0,0.03); }
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,255,170,0.2), rgba(77,184,255,0.2));
+  border: 1px solid rgba(0,255,170,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #00ffaa; flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 11px; color: var(--muted); }
+
+.main { margin-left: 240px; width: calc(100% - 240px); padding: 20px 24px; }
+
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px;
+  background: rgba(12,21,40,0.6);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border); border-radius: 14px;
+  margin-bottom: 22px; transition: background 0.3s;
+}
+body.light .topbar { background: rgba(255,255,255,0.85); }
+.topbar-left { display: flex; flex-direction: column; gap: 2px; }
+.topbar-title { font-size: 17px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--muted); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(0,255,170,0.08); border: 1px solid rgba(0,255,170,0.22);
+  font-size: 12px; font-weight: 600; color: #00ffaa;
+}
+body.light .status-pill { background: rgba(0,180,110,0.08); border-color: rgba(0,180,110,0.25); color: #00965a; }
+.pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ffaa; animation: pulse-anim 2s infinite; }
+body.light .pulse-dot { background: #00965a; }
+@keyframes pulse-anim {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,170,0.5); }
+  50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,255,170,0); }
+}
+
+.theme-btn {
+  padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05); color: var(--muted);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.theme-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: rgba(255,255,255,0.08); }
+body.light .theme-btn { background: rgba(0,0,0,0.04); }
+body.light .theme-btn:hover { background: rgba(0,0,0,0.07); }
+
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-bottom: 18px;
+}
+
+.stat-card {
+  position: relative; overflow: hidden;
+  padding: 18px 20px; border-radius: 16px;
+  border: 1px solid var(--border); background: var(--panel);
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; cursor: default;
+}
+.stat-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.14); box-shadow: 0 16px 40px rgba(0,0,0,0.25); }
+body.light .stat-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.12); }
+
+.stat-card::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle at top right, var(--glow), transparent 70%);
+  pointer-events: none;
+}
+.stat-card[data-color="green"]  { --glow: rgba(0,255,170,0.10); }
+.stat-card[data-color="blue"]   { --glow: rgba(77,184,255,0.10); }
+.stat-card[data-color="orange"] { --glow: rgba(255,179,71,0.10); }
+.stat-card[data-color="red"]    { --glow: rgba(255,94,122,0.10); }
+
+.stat-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; margin-bottom: 10px;
+}
+.stat-card[data-color="green"]  .stat-icon { background: rgba(0,255,170,0.10);  border: 1px solid rgba(0,255,170,0.18); }
+.stat-card[data-color="blue"]   .stat-icon { background: rgba(77,184,255,0.10); border: 1px solid rgba(77,184,255,0.18); }
+.stat-card[data-color="orange"] .stat-icon { background: rgba(255,179,71,0.10); border: 1px solid rgba(255,179,71,0.18); }
+.stat-card[data-color="red"]    .stat-icon { background: rgba(255,94,122,0.10); border: 1px solid rgba(255,94,122,0.18); }
+
+.stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.stat-value { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; }
+.stat-card[data-color="green"]  .stat-value { color: #00ffaa; }
+.stat-card[data-color="blue"]   .stat-value { color: #4db8ff; }
+.stat-card[data-color="orange"] .stat-value { color: #ffb347; }
+.stat-card[data-color="red"]    .stat-value { color: #ff5e7a; }
+body.light .stat-card[data-color="green"]  .stat-value { color: #00965a; }
+body.light .stat-card[data-color="blue"]   .stat-value { color: #1a80cc; }
+body.light .stat-card[data-color="orange"] .stat-value { color: #cc7a00; }
+body.light .stat-card[data-color="red"]    .stat-value { color: #cc2244; }
+
+.box { border-radius: 16px; border: 1px solid var(--border); background: var(--panel); transition: background 0.3s; }
+
+.controls {
+  padding: 16px 20px;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.search-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-wrap span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; pointer-events: none; }
+
+#searchBox {
+  width: 100%; padding: 10px 14px 10px 38px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font-size: 13px; outline: none; transition: 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+#searchBox::placeholder { color: var(--muted); }
+#searchBox:focus { border-color: #00ffaa; }
+
+.filter-select {
+  padding: 10px 14px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font-size: 13px; outline: none; cursor: pointer; transition: 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.filter-select:focus { border-color: #4db8ff; }
+
+.btn {
+  padding: 10px 18px; border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.25s;
+  display: flex; align-items: center; gap: 6px; text-decoration: none;
+  font-family: 'Inter', sans-serif;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  color: #070d1a; box-shadow: 0 4px 18px rgba(0,255,170,0.25);
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.table-box { overflow: hidden; margin-bottom: 16px; }
+
+.table-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.table-header h3 { font-size: 14px; font-weight: 700; }
+
+#resultCount {
+  font-size: 11px; color: var(--muted);
+  background: rgba(255,255,255,0.05);
+  padding: 4px 10px; border-radius: 20px; font-weight: 600;
+}
+body.light #resultCount { background: rgba(0,0,0,0.05); }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 820px; }
+thead tr { background: rgba(0,255,170,0.06); }
+body.light thead tr { background: rgba(0,200,130,0.05); }
+
+th {
+  padding: 13px 16px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.7px;
+  color: var(--muted); text-align: left; white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+th.sortable { cursor: pointer; user-select: none; transition: 0.2s; }
+th.sortable:hover { color: #00ffaa; }
+
+td {
+  padding: 10px 16px; font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr { transition: 0.2s; }
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+body.light tbody tr:hover { background: rgba(0,0,0,0.02); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* ── MEDICINE THUMBNAIL ─────────────────────────────────── */
+.med-thumb-wrap {
+  width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+  overflow: hidden; border: 1px solid var(--border);
+  background: var(--panel2);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer; transition: 0.2s;
+}
+.med-thumb-wrap:hover { border-color: #4db8ff; transform: scale(1.06); }
+.med-thumb-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; transition: 0.2s;
+}
+.med-thumb-placeholder {
+  font-size: 20px; line-height: 1; user-select: none;
+  opacity: 0.55;
+}
+
+.med-name-cell { display: flex; align-items: center; gap: 10px; }
+.med-name-text { font-weight: 600; }
+
+/* ── EDIT IMAGE UPLOAD ──────────────────────────────────── */
+.img-upload-wrap { position: relative; display: inline-block; }
+.img-upload-wrap input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+}
+.img-upload-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 8px;
+  background: rgba(181,123,255,0.10); color: #b57bff;
+  border: 1px solid rgba(181,123,255,0.28);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+}
+
+/* Edit-mode thumb */
+.edit-thumb-preview {
+  width: 44px; height: 44px; border-radius: 10px;
+  overflow: hidden; border: 1px dashed #4db8ff;
+  background: var(--panel2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.edit-thumb-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── IMAGE LIGHTBOX ─────────────────────────────────────── */
+.lightbox {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  z-index: 3000; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.lightbox.open { display: flex; }
+.lightbox-inner { position: relative; max-width: 90vw; max-height: 90vh; }
+.lightbox-inner img {
+  max-width: 90vw; max-height: 85vh;
+  border-radius: 16px; border: 1px solid var(--border);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  display: block;
+}
+.lightbox-close {
+  position: absolute; top: -14px; right: -14px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #ff5e7a; color: #fff; border: none;
+  font-size: 18px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(255,94,122,0.4); transition: 0.2s;
+}
+.lightbox-close:hover { transform: scale(1.1); }
+.lightbox-name {
+  text-align: center; margin-top: 12px;
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.8);
+}
+
+/* ── BADGES ─────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge.safe     { background: rgba(0,255,170,0.10);  color: #00ffaa; border: 1px solid rgba(0,255,170,0.22); }
+.badge.low      { background: rgba(77,184,255,0.10);  color: #4db8ff; border: 1px solid rgba(77,184,255,0.22); }
+.badge.expiring { background: rgba(255,179,71,0.10);  color: #ffb347; border: 1px solid rgba(255,179,71,0.22); }
+.badge.expired  { background: rgba(255,94,122,0.10);  color: #ff5e7a; border: 1px solid rgba(255,94,122,0.22); }
+.badge.critical { background: rgba(255,94,122,0.10);  color: #ff5e7a; border: 1px solid rgba(255,94,122,0.22); }
+body.light .badge.safe     { color: #00965a; }
+body.light .badge.low      { color: #1a80cc; }
+body.light .badge.expiring { color: #cc7a00; }
+body.light .badge.expired,
+body.light .badge.critical { color: #cc2244; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 44px; margin-bottom: 12px; }
+.empty-state p { font-size: 13px; }
+
+.pagination {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px; border-top: 1px solid var(--border);
+  font-size: 12.5px; color: var(--muted); flex-wrap: wrap; gap: 10px;
+}
+.page-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.page-btn {
+  padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; color: var(--text); font-size: 12px;
+  cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;
+}
+.page-btn:hover { background: rgba(255,255,255,0.07); }
+body.light .page-btn:hover { background: rgba(0,0,0,0.05); }
+.page-btn.active {
+  background: linear-gradient(135deg, rgba(0,255,170,0.18), rgba(77,184,255,0.18));
+  border-color: #00ffaa; color: #00ffaa; font-weight: 700;
+}
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.spinner { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 50px; color: var(--muted); font-size: 13px; }
+.spin { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: #00ffaa; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.action-btn {
+  padding: 5px 11px; border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; margin: 2px;
+  font-family: 'Inter', sans-serif;
+}
+.edit-btn   { background: rgba(77,184,255,0.10);  color: #4db8ff; border: 1px solid rgba(77,184,255,0.28); }
+.edit-btn:hover   { background: rgba(77,184,255,0.22); transform: translateY(-1px); }
+.delete-btn { background: rgba(255,94,122,0.10);  color: #ff5e7a; border: 1px solid rgba(255,94,122,0.28); }
+.delete-btn:hover { background: rgba(255,94,122,0.22); transform: translateY(-1px); }
+.save-btn   { background: rgba(0,255,170,0.10);   color: #00ffaa; border: 1px solid rgba(0,255,170,0.28); }
+.save-btn:hover   { background: rgba(0,255,170,0.22); transform: translateY(-1px); }
+.cancel-btn { background: rgba(90,114,153,0.12);  color: var(--muted); border: 1px solid rgba(90,114,153,0.28); }
+.cancel-btn:hover { background: rgba(90,114,153,0.22); transform: translateY(-1px); }
+
+.inline-input {
+  background: var(--bg); border: 1px solid #4db8ff; border-radius: 7px;
+  color: var(--text); padding: 5px 8px; font-size: 12px;
+  width: 100%; min-width: 60px; outline: none; transition: 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.inline-input:focus { border-color: #00ffaa; box-shadow: 0 0 0 2px rgba(0,255,170,0.15); }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center;
+  z-index: 2000; animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px 32px; width: 340px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal .modal-icon { font-size: 40px; margin-bottom: 12px; }
+.modal h3 { font-size: 16px; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+.modal-btns { display: flex; gap: 10px; justify-content: center; }
+.modal-btn {
+  padding: 10px 22px; border-radius: 10px; border: none;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.modal-btn.cancel { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
+.modal-btn.cancel:hover { background: rgba(255,255,255,0.12); }
+body.light .modal-btn.cancel { background: rgba(0,0,0,0.04); }
+.modal-btn.confirm-del { background: linear-gradient(135deg, #ff5e7a, #cc1c3c); color: white; }
+.modal-btn.confirm-del:hover { opacity: 0.85; }
+
+.debug-box {
+  background: rgba(255,179,71,0.08); border: 1px solid rgba(255,179,71,0.3);
+  border-radius: 12px; padding: 12px 16px;
+  font-size: 11.5px; color: #ffb347; font-family: monospace;
+  margin-bottom: 16px; word-break: break-all; line-height: 1.6;
+}
+
+.mobile-nav {
+  display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 12px 16px;
+  background: rgba(12,21,40,0.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  align-items: center; justify-content: space-between; gap: 12px;
+}
+body.light .mobile-nav { background: rgba(255,255,255,0.95); }
+.mobile-brand { display: flex; align-items: center; gap: 10px; }
+.mobile-brand-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #00ffaa, #4db8ff);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+  box-shadow: 0 0 14px rgba(0,255,170,0.3); flex-shrink: 0;
+}
+.mobile-brand-text { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+.mobile-right { display: flex; align-items: center; gap: 8px; }
+.hamburger {
+  width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer; transition: background 0.2s;
+}
+.hamburger:hover { background: rgba(255,255,255,0.1); }
+body.light .hamburger { background: rgba(0,0,0,0.04); }
+body.light .hamburger:hover { background: rgba(0,0,0,0.08); }
+.hamburger span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: all 0.3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(2px); }
+.drawer-overlay.open { display: block; }
+.sidebar.drawer-open { transform: translateX(0) !important; box-shadow: 4px 0 40px rgba(0,0,0,0.5); }
+
+@media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) {
+  .mobile-nav { display: flex; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 200; }
+  .main { margin-left: 0; width: 100%; padding: 80px 14px 14px; }
+  .controls { flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+</style>
 </head>
-
 <body>
 
-    <h1>💊 Medicine List</h1>
-    <input type="text" id="searchBox" placeholder="Search Medicine..." style="width:100%;padding:10px;margin-bottom:10px;">
-    <table id="medicineTable">
-    
-        <tr>
-            <th>Name</th>
-            <th>Batch</th>
-            <th>Quantity</th>
-            <th>Expiry</th>
-            <th>Buy Price</th>
-            <th>Sell Price</th>
-        </tr>
-    
-    </table>
-    
-    <script>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-inner" onclick="event.stopPropagation()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-name" id="lightboxName"></div>
+  </div>
+</div>
 
-        let allMedicines = [];
-        
-        fetch("/medicines")
-        .then(res => res.json())
-        .then(data => {
-        
-            allMedicines = data;
-            renderTable(allMedicines);
-        
-        });
-        
-        function renderTable(data) {
-        
-            const table = document.getElementById("medicineTable");
-        
-            table.innerHTML = `
-                <tr>
-                    <th>Name</th>
-                    <th>Batch</th>
-                    <th>Quantity</th>
-                    <th>Expiry</th>
-                    <th>Buy Price</th>
-                    <th>Sell Price</th>
-                </tr>
-            `;
-        
-            data.forEach(med => {
-        
-                table.innerHTML += `
-                    <tr>
-                        <td>${med.medName}</td>
-                        <td>${med.batchNo}</td>
-                        <td>${med.quantity}</td>
-                        <td>${med.expiryDate}</td>
-                        <td>${med.buyPrice}</td>
-                        <td>${med.sellPrice}</td>
-                    </tr>
-                `;
-            });
-        }
-        
-        // SEARCH FUNCTION
-        document.getElementById("searchBox").addEventListener("keyup", function() {
-        
-            let value = this.value.toLowerCase();
-        
-            let filtered = allMedicines.filter(med =>
-                med.medName.toLowerCase().includes(value)
-            );
-        
-            renderTable(filtered);
-        
-        });
-        
-        </script>
-    
-    </body>
+<!-- MOBILE TOP NAVBAR -->
+<nav class="mobile-nav">
+  <div class="mobile-brand">
+    <div class="mobile-brand-icon">💊</div>
+    <div class="mobile-brand-text">MedTrack LK</div>
+  </div>
+  <div class="mobile-right">
+    <div class="status-pill" style="padding:5px 10px;font-size:11px">
+      <div class="pulse-dot"></div> Active
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMobile" style="padding:6px 10px">🌙</button>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">💊</div>
+      <div>
+        <div class="brand-text">MedTrack LK</div>
+        <div class="brand-sub">Pharmacy System</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Main Menu</div>
+    <a class="nav-item" href="/dashboard.html"><div class="nav-dot"></div> Dashboard</a>
+    <a class="nav-item" href="/addMedicine.html"><div class="nav-dot"></div> Add Medicine</a>
+    <a class="nav-item active" href="/viewMedicines.html"><div class="nav-dot"></div> Inventory</a>
+    <a class="nav-item" href="/billing.html"><div class="nav-dot"></div> Billing</a>
+    <a class="nav-item" href="/chatbot.html"><div class="nav-dot"></div> AI Chatbot</a>
+    <a class="nav-item" href="/dailyReport.html"><div class="nav-dot"></div> Daily Report</a>
+
+    <div class="nav-footer">
+      <div class="user-chip">
+        <div class="avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Pharmacist</div>
+        </div>
+      </div>
+      <a class="nav-item danger" href="/logout" style="margin-top:10px">
+        <div class="nav-dot" style="background:#ff5e7a"></div> Logout
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Medicine Inventory</div>
+        <div class="topbar-sub" id="dateStr">Loading…</div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-pill">
+          <div class="pulse-dot"></div> System Active
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card" data-color="green">
+        <div class="stat-icon">💊</div>
+        <div class="stat-label">Total Items</div>
+        <div class="stat-value" id="statTotal">—</div>
+      </div>
+      <div class="stat-card" data-color="blue">
+        <div class="stat-icon">📦</div>
+        <div class="stat-label">Low Stock</div>
+        <div class="stat-value" id="statLow">—</div>
+      </div>
+      <div class="stat-card" data-color="orange">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Expiring Soon</div>
+        <div class="stat-value" id="statExpiring">—</div>
+      </div>
+      <div class="stat-card" data-color="red">
+        <div class="stat-icon">🔴</div>
+        <div class="stat-label">Expired</div>
+        <div class="stat-value" id="statExpired">—</div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="box controls">
+      <div class="search-wrap">
+        <span>🔍</span>
+        <input type="text" id="searchBox" placeholder="Search by medicine name or batch…" oninput="applyFilters()">
+      </div>
+      <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+        <option value="all">All Status</option>
+        <option value="safe">✅ Safe</option>
+        <option value="low">📦 Low Stock</option>
+        <option value="expiring">⚠ Expiring Soon</option>
+        <option value="expired">🔴 Expired</option>
+      </select>
+      <select class="filter-select" id="sortBy" onchange="applyFilters()">
+        <option value="name">Sort: Name</option>
+        <option value="qty_asc">Sort: Qty ↑</option>
+        <option value="qty_desc">Sort: Qty ↓</option>
+        <option value="expiry">Sort: Expiry</option>
+        <option value="price_desc">Sort: Price ↓</option>
+      </select>
+      <a href="/addMedicine.html" class="btn btn-primary">➕ Add Medicine</a>
+    </div>
+
+    <!-- DEBUG BOX -->
+    <div id="debugInfo" class="debug-box">⏳ Loading debug info…</div>
+
+    <!-- TABLE -->
+    <div class="box table-box">
+      <div class="table-header">
+        <h3>📋 Stock List</h3>
+        <span id="resultCount">Loading…</span>
+      </div>
+
+      <div class="table-wrap">
+        <table id="medicineTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Image</th>
+              <th class="sortable" onclick="setSortAndApply('name')">Medicine Name ⇅</th>
+              <th>Batch No</th>
+              <th class="sortable" onclick="setSortAndApply('qty_asc')">Qty ⇅</th>
+              <th class="sortable" onclick="setSortAndApply('expiry')">Expiry Date ⇅</th>
+              <th class="sortable" onclick="setSortAndApply('price_desc')">Buy Price ⇅</th>
+              <th>Sell Price</th>
+              <th>Status</th>
+              <th style="text-align:center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="10">
+                <div class="spinner"><div class="spin"></div> Loading medicines…</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <span id="pageInfo">—</span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let allMedicines = [];
+let filtered     = [];
+const PAGE_SIZE  = 15;
+let currentPage  = 1;
+// Track pending image files for inline edits
+const pendingImages = {}; // id -> File
+
+document.getElementById("dateStr").innerText =
+  new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// ── FETCH ──────────────────────────────────────────────────────
+fetch("/medicines", { credentials: "include" })
+  .then(r => {
+    if (r.status === 401) { window.location.href = "/login.html"; return null; }
+    return r.json();
+  })
+  .then(data => {
+    if (!data) return;
+    if (data && data.length > 0) {
+      document.getElementById("debugInfo").textContent =
+        "Sample record: " + JSON.stringify(data[0]);
+    }
+    allMedicines = data;
+    updateStats(data);
+    applyFilters();
+  })
+  .catch(err => {
+    document.getElementById("tableBody").innerHTML =
+      `<tr><td colspan="10"><div class="empty-state"><div class="icon">❌</div><p>Could not load medicines. Check server connection.</p></div></td></tr>`;
+    document.getElementById("resultCount").textContent = "Error";
+    document.getElementById("debugInfo").textContent = "Fetch error: " + err;
+  });
+
+// ── STATUS ─────────────────────────────────────────────────────
+function getStatus(med) {
+  const today    = new Date();
+  const expiry   = new Date(med.expiryDate);
+  const diffDays = Math.ceil((expiry - today) / 86400000);
+  const qty      = parseInt(med.quantity) || 0;
+  if (diffDays < 0)   return "expired";
+  if (diffDays <= 30) return "expiring";
+  if (qty <= 20)      return "low";
+  return "safe";
+}
+
+function statusBadge(status) {
+  const map = { safe:"✅ Safe", low:"📦 Low Stock", expiring:"⚠ Expiring", expired:"🔴 Expired" };
+  return `<span class="badge ${status}">${map[status] || status}</span>`;
+}
+
+// ── STATS ──────────────────────────────────────────────────────
+function updateStats(data) {
+  let low = 0, expiring = 0, expired = 0;
+  data.forEach(m => {
+    const s = getStatus(m);
+    if (s === "low")      low++;
+    if (s === "expiring") expiring++;
+    if (s === "expired")  expired++;
+  });
+  document.getElementById("statTotal").textContent    = data.length;
+  document.getElementById("statLow").textContent      = low;
+  document.getElementById("statExpiring").textContent = expiring;
+  document.getElementById("statExpired").textContent  = expired;
+}
+
+// ── FILTER & SORT ──────────────────────────────────────────────
+function setSortAndApply(val) {
+  document.getElementById("sortBy").value = val;
+  applyFilters();
+}
+
+function applyFilters() {
+  const query  = document.getElementById("searchBox").value.toLowerCase();
+  const status = document.getElementById("statusFilter").value;
+  const sort   = document.getElementById("sortBy").value;
+
+  filtered = allMedicines.filter(m => {
+    const matchSearch = m.medName.toLowerCase().includes(query) ||
+                        (m.batchNo || "").toLowerCase().includes(query);
+    const matchStatus = status === "all" || getStatus(m) === status;
+    return matchSearch && matchStatus;
+  });
+
+  filtered.sort((a, b) => {
+    if (sort === "name")       return a.medName.localeCompare(b.medName);
+    if (sort === "qty_asc")    return (parseInt(a.quantity)||0) - (parseInt(b.quantity)||0);
+    if (sort === "qty_desc")   return (parseInt(b.quantity)||0) - (parseInt(a.quantity)||0);
+    if (sort === "expiry")     return new Date(a.expiryDate) - new Date(b.expiryDate);
+    if (sort === "price_desc") return (parseFloat(b.sellPrice)||0) - (parseFloat(a.sellPrice)||0);
+    return 0;
+  });
+
+  currentPage = 1;
+  renderPage();
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function renderPage() {
+  const tbody = document.getElementById("tableBody");
+  const total = filtered.length;
+  const pages = Math.ceil(total / PAGE_SIZE) || 1;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+
+  document.getElementById("resultCount").textContent =
+    total === allMedicines.length ? `${total} medicines` : `${total} of ${allMedicines.length}`;
+
+  if (slice.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">🔍</div><p>No medicines match your search.</p></div></td></tr>`;
+  } else {
+    tbody.innerHTML = slice.map((m, i) => viewRow(m, start + i + 1)).join("");
+  }
+
+  document.getElementById("pageInfo").textContent =
+    `Page ${currentPage} of ${pages}  (${total} total)`;
+
+  const pageBtns = document.getElementById("pageBtns");
+  pageBtns.innerHTML = "";
+
+  const prev = document.createElement("button");
+  prev.className = "page-btn"; prev.textContent = "← Prev";
+  prev.disabled = currentPage === 1;
+  prev.onclick  = () => { currentPage--; renderPage(); };
+  pageBtns.appendChild(prev);
+
+  for (let p = 1; p <= pages; p++) {
+    if (pages > 7 && Math.abs(p - currentPage) > 2 && p !== 1 && p !== pages) continue;
+    const btn = document.createElement("button");
+    btn.className = "page-btn" + (p === currentPage ? " active" : "");
+    btn.textContent = p;
+    btn.onclick = () => { currentPage = p; renderPage(); };
+    pageBtns.appendChild(btn);
+  }
+
+  const next = document.createElement("button");
+  next.className = "page-btn"; next.textContent = "Next →";
+  next.disabled = currentPage === pages;
+  next.onclick  = () => { currentPage++; renderPage(); };
+  pageBtns.appendChild(next);
+}
+
+// ── IMAGE THUMBNAIL HTML ───────────────────────────────────────
+function thumbHtml(m) {
+  const id = m._id || m.id || "";
+  // imageUrl can be a path like /uploads/medicines/<id>.jpg stored in m.imageUrl
+  if (m.imageUrl) {
+    return `<div class="med-thumb-wrap" onclick="openLightbox('${m.imageUrl}','${m.medName.replace(/'/g,"\\'")}')">
+              <img src="${m.imageUrl}" alt="${m.medName}" onerror="this.parentNode.innerHTML='<span class=med-thumb-placeholder>💊</span>'">
+            </div>`;
+  }
+  return `<div class="med-thumb-wrap" title="No image" onclick="void(0)" style="cursor:default">
+            <span class="med-thumb-placeholder">💊</span>
+          </div>`;
+}
+
+// ── ROW HELPERS ────────────────────────────────────────────────
+function viewRow(m, rowNum) {
+  const id  = m._id || m.id || "";
+  const qty = parseInt(m.quantity) || 0;
+  const qtyColor = qty <= 5 ? "color:#ff5e7a" : qty <= 10 ? "color:#ffb347" : "color:#00ffaa";
+  const status = getStatus(m);
+  return `
+    <tr id="row-${id}">
+      <td style="color:var(--muted)">${rowNum}</td>
+      <td>${thumbHtml(m)}</td>
+      <td style="font-weight:600">${m.medName}</td>
+      <td style="color:var(--muted);font-size:12px">${m.batchNo || "—"}</td>
+      <td style="${qtyColor};font-weight:600">${qty}</td>
+      <td style="color:var(--muted)">${m.expiryDate}</td>
+      <td>Rs ${parseFloat(m.buyPrice||0).toFixed(2)}</td>
+      <td style="color:#00ffaa;font-weight:600">Rs ${parseFloat(m.sellPrice||0).toFixed(2)}</td>
+      <td>${statusBadge(status)}</td>
+      <td style="text-align:center;white-space:nowrap">
+        <button class="action-btn edit-btn" onclick="startEdit('${id}')">✏️ Edit</button>
+        <button class="action-btn delete-btn" onclick="deleteMedicine('${id}','${m.medName.replace(/'/g,"\\'")}')">🗑 Delete</button>
+      </td>
+    </tr>`;
+}
+
+function editRow(m) {
+  const id = m._id || m.id || "";
+  const currentThumb = m.imageUrl
+    ? `<img src="${m.imageUrl}" alt="" onerror="this.parentNode.innerHTML='💊'">`
+    : "💊";
+  return `
+    <tr id="row-${id}" style="background:rgba(77,184,255,0.05)">
+      <td style="color:var(--muted)">✏️</td>
+      <td>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+          <div class="edit-thumb-preview" id="ep-${id}">${currentThumb}</div>
+          <div class="img-upload-wrap">
+            <div class="img-upload-btn">📷 Change</div>
+            <input type="file" accept="image/*" onchange="previewEditImage(event,'${id}')">
+          </div>
+        </div>
+      </td>
+      <td><input class="inline-input" value="${m.medName}" id="e-name-${id}"></td>
+      <td><input class="inline-input" value="${m.batchNo||''}" id="e-batch-${id}"></td>
+      <td><input class="inline-input" type="number" value="${m.quantity||0}" id="e-qty-${id}" style="width:70px"></td>
+      <td><input class="inline-input" type="date" value="${m.expiryDate||''}" id="e-expiry-${id}"></td>
+      <td><input class="inline-input" type="number" step="0.01" value="${m.buyPrice||0}" id="e-buy-${id}" style="width:90px"></td>
+      <td><input class="inline-input" type="number" step="0.01" value="${m.sellPrice||0}" id="e-sell-${id}" style="width:90px"></td>
+      <td><span class="badge low">Editing…</span></td>
+      <td style="text-align:center;white-space:nowrap">
+        <button class="action-btn save-btn" onclick="saveEdit('${id}')">💾 Save</button>
+        <button class="action-btn cancel-btn" onclick="cancelEdit('${id}')">✕ Cancel</button>
+      </td>
+    </tr>`;
+}
+
+// ── IMAGE PREVIEW IN EDIT MODE ─────────────────────────────────
+function previewEditImage(event, id) {
+  const file = event.target.files[0];
+  if (!file) return;
+  pendingImages[id] = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById(`ep-${id}`);
+    if (preview) preview.innerHTML = `<img src="${e.target.result}" alt="">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── LIGHTBOX ───────────────────────────────────────────────────
+function openLightbox(src, name) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightboxName").textContent = name;
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
+
+// ── INLINE EDIT ────────────────────────────────────────────────
+function startEdit(id) {
+  const m = allMedicines.find(x => String(x._id || x.id) === String(id));
+  if (!m) return;
+  document.getElementById(`row-${id}`).outerHTML = editRow(m);
+}
+
+function cancelEdit(id) {
+  delete pendingImages[id];
+  const m = allMedicines.find(x => String(x._id || x.id) === String(id));
+  if (!m) return;
+  const rowNum = (currentPage - 1) * PAGE_SIZE + filtered.indexOf(m) + 1;
+  document.getElementById(`row-${id}`).outerHTML = viewRow(m, rowNum >= 1 ? rowNum : 1);
+}
+
+function saveEdit(id) {
+  const m = allMedicines.find(x => String(x._id || x.id) === String(id));
+  if (!m) {
+    document.getElementById("debugInfo").textContent = "❌ Could not find medicine with id=" + id;
+    return;
+  }
+
+  const nameEl   = document.getElementById(`e-name-${id}`);
+  const batchEl  = document.getElementById(`e-batch-${id}`);
+  const qtyEl    = document.getElementById(`e-qty-${id}`);
+  const expiryEl = document.getElementById(`e-expiry-${id}`);
+  const buyEl    = document.getElementById(`e-buy-${id}`);
+  const sellEl   = document.getElementById(`e-sell-${id}`);
+
+  if (!nameEl) {
+    document.getElementById("debugInfo").textContent = "❌ Edit inputs not found";
+    return;
+  }
+
+  if (!nameEl.value.trim()) { alert("Medicine name cannot be empty."); return; }
+
+  const saveBtn = document.querySelector(`#row-${id} .save-btn`);
+  if (saveBtn) { saveBtn.textContent = "Saving…"; saveBtn.disabled = true; }
+
+  // Use FormData to support optional image upload
+  const formData = new FormData();
+  formData.append("id",         String(id));
+  formData.append("medName",    nameEl.value.trim());
+  formData.append("batchNo",    batchEl.value.trim());
+  formData.append("quantity",   qtyEl.value);
+  formData.append("expiryDate", expiryEl.value);
+  formData.append("buyPrice",   buyEl.value);
+  formData.append("sellPrice",  sellEl.value);
+
+  if (pendingImages[id]) {
+    formData.append("image", pendingImages[id]);
+  }
+
+  document.getElementById("debugInfo").textContent = "Trying: POST /updateMedicine (multipart) | id=" + id;
+
+  fetch(`/updateMedicine`, {
+    method: "POST",
+    credentials: "include",
+    body: formData   // no Content-Type header — browser sets multipart boundary
+  })
+  .then(r => r.text())
+  .then(text => {
+    document.getElementById("debugInfo").textContent = "Server replied: " + text;
+    let result;
+    try { result = JSON.parse(text); } catch(e) { throw new Error("Bad JSON: " + text); }
+    if (!result.success) throw new Error(result.error || "Server returned failure");
+
+    // Update local record
+    m.medName    = nameEl.value.trim();
+    m.batchNo    = batchEl.value.trim();
+    m.quantity   = qtyEl.value;
+    m.expiryDate = expiryEl.value;
+    m.buyPrice   = buyEl.value;
+    m.sellPrice  = sellEl.value;
+    if (result.imageUrl) m.imageUrl = result.imageUrl; // server returns new path if uploaded
+
+    delete pendingImages[id];
+
+    const row = document.getElementById(`row-${id}`);
+    const rowNum = row
+      ? (Array.from(row.parentNode.children).indexOf(row) + 1 + (currentPage-1)*PAGE_SIZE)
+      : 1;
+    if (row) row.outerHTML = viewRow(m, rowNum);
+    updateStats(allMedicines);
+    document.getElementById("debugInfo").textContent = "✅ Saved successfully!";
+  })
+  .catch(err => {
+    const sb = document.querySelector(`#row-${id} .save-btn`);
+    if (sb) { sb.textContent = "❌ Retry"; sb.disabled = false; sb.style.color = "#ff5e7a"; }
+    document.getElementById("debugInfo").textContent = "Save error: " + err;
+    console.error("Save error:", err);
+  });
+}
+
+// ── DELETE ─────────────────────────────────────────────────────
+function deleteMedicine(id, name) {
+  const existing = document.getElementById("del-modal");
+  if (existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.id = "del-modal";
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-icon">🗑️</div>
+      <h3>Delete Medicine</h3>
+      <p>Are you sure you want to delete <strong>${name}</strong>?<br>This cannot be undone.</p>
+      <div class="modal-btns">
+        <button class="modal-btn cancel" onclick="document.getElementById('del-modal').remove()">Cancel</button>
+        <button class="modal-btn confirm-del" id="del-confirm-btn" onclick="confirmDelete('${id}')">Yes, Delete</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function confirmDelete(id) {
+  const btn = document.getElementById("del-confirm-btn");
+  btn.textContent = "Deleting…"; btn.disabled = true;
+
+  document.getElementById("debugInfo").textContent = "Trying: POST /deleteMedicine | id=" + id;
+
+  fetch(`/deleteMedicine`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "id=" + encodeURIComponent(id)
+  })
+  .then(r => r.text())
+  .then(text => {
+    document.getElementById("debugInfo").textContent = "Server replied: " + text;
+    let result;
+    try { result = JSON.parse(text); } catch(e) { throw new Error("Bad JSON: " + text); }
+    if (!result.success) throw new Error(result.error || "Server returned failure");
+
+    allMedicines = allMedicines.filter(m => String(m._id || m.id) !== String(id));
+    updateStats(allMedicines);
+    applyFilters();
+    const modal = document.getElementById("del-modal");
+    if (modal) modal.remove();
+    document.getElementById("debugInfo").textContent = "✅ Deleted successfully!";
+  })
+  .catch(err => {
+    btn.textContent = "❌ Error — Retry";
+    btn.disabled = false; btn.style.color = "#ff5e7a";
+    document.getElementById("debugInfo").textContent = "Delete error: " + err;
+    console.error("Delete error:", err);
+  });
+}
+
+// ── THEME ──────────────────────────────────────────────────────
+function setTheme(mode) {
+  document.body.classList.toggle("light", mode === "light");
+  localStorage.setItem("theme", mode);
+  const label = mode === "light" ? "🌞" : "🌙";
+  const labelFull = mode === "light" ? "🌞 Light Mode" : "🌙 Dark Mode";
+  const d = document.getElementById("themeBtn");
+  const mb = document.getElementById("themeBtnMobile");
+  if (d) d.innerText = labelFull;
+  if (mb) mb.innerText = label;
+}
+function toggleTheme() {
+  setTheme((localStorage.getItem("theme") || "dark") === "dark" ? "light" : "dark");
+}
+setTheme(localStorage.getItem("theme") || "dark");
+
+// ── DRAWER ─────────────────────────────────────────────────────
+function toggleDrawer() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("drawerOverlay");
+  const burger  = document.getElementById("hamburger");
+  sidebar.classList.contains("drawer-open") ? closeDrawer() : (
+    sidebar.classList.add("drawer-open"),
+    overlay.classList.add("open"),
+    burger.classList.add("open")
+  );
+}
+function closeDrawer() {
+  document.querySelector(".sidebar").classList.remove("drawer-open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+  document.getElementById("hamburger").classList.remove("open");
+}
+</script>
+</body>
 </html>

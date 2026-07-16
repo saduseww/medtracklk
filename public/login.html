@@ -1,59 +1,267 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>MedTrack LK - Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTrack LK - Login</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 300px;
-            box-shadow: 0px 0px 10px gray;
-        }
+:root{
+  --bg:#0b1220;
+  --panel:#0f1a2e;
+  --border:#1f2b45;
+  --text:#eaf1ff;
+  --muted:#7f93b0;
+  --green:#00d38a;
+  --blue:#4da3ff;
+}
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-        }
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background: green;
-            color: white;
-            border: none;
-        }
-    </style>
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.login-card{
+  width:380px;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+}
+
+.card-top{
+  background:linear-gradient(135deg,#00e5a0,#4da3ff);
+  padding:28px 30px 24px;
+  text-align:center;
+}
+
+.logo-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:6px;
+}
+
+.logo-icon{
+  width:48px; height:48px;
+  border-radius:14px;
+  background:rgba(0,0,0,0.18);
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+  flex-shrink:0;
+}
+
+.logo-name{
+  font-size:24px;
+  font-weight:800;
+  color:#0b1220;
+}
+
+.logo-sub{
+  font-size:12px;
+  color:rgba(11,18,32,0.65);
+  font-weight:500;
+}
+
+.card-body{
+  padding:28px 30px 30px;
+}
+
+.welcome{
+  font-size:16px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:4px;
+}
+
+.hint{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:#9fb0c8;
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+}
+
+.input-wrap{
+  position:relative;
+  margin-bottom:16px;
+}
+
+.input-wrap input{
+  width:100%;
+  padding:11px 14px 11px 42px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+  transition:0.2s;
+  font-family:Inter,sans-serif;
+}
+
+.input-wrap input::placeholder{ color:#4a5c78; }
+.input-wrap input:focus{ border-color:#00e5a0; }
+
+.input-error input{
+  border-color:#ff5c5c !important;
+}
+
+.input-icon{
+  position:absolute;
+  left:13px; top:50%;
+  transform:translateY(-50%);
+  font-size:16px;
+  color:#4a5c78;
+  pointer-events:none;
+}
+
+.forgot{
+  display:block;
+  text-align:right;
+  font-size:12px;
+  color:var(--blue);
+  text-decoration:none;
+  margin-top:-8px;
+  margin-bottom:20px;
+}
+
+.error-msg{
+  display:none;
+}
+
+.error-msg{
+  display:none;
+  background:rgba(255,92,92,0.12);
+  border:1px solid rgba(255,92,92,0.4);
+  color:#ff5c5c;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:500;
+  margin-bottom:16px;
+  text-align:center;
+}
+
+@keyframes fadeIn{
+  from{ opacity:0; transform:translateY(-6px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.btn{
+  width:100%;
+  padding:13px;
+  background:linear-gradient(135deg,#00e5a0,#4da3ff);
+  border:none;
+  border-radius:10px;
+  color:#0b1220;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+  font-family:Inter,sans-serif;
+}
+
+.btn:hover{ opacity:0.9; transform:translateY(-1px); }
+.btn:active{ transform:translateY(0); }
+
+.divider{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:20px 0;
+}
+
+.divider-line{ flex:1; height:1px; background:var(--border); }
+.divider-text{ font-size:12px; color:#4a5c78; }
+
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#4a5c78;
+  margin-top:16px;
+}
+
+.footer span{ color:#00e5a0; }
+</style>
 </head>
-
 <body>
 
-<div class="box">
-    <h2>💊 MedTrack LK</h2>
+<div class="login-card">
+  <div class="card-top">
+    <div class="logo-wrap">
+      <div class="logo-icon">💊</div>
+      <div class="logo-name">MedTrack LK</div>
+    </div>
+    <div class="logo-sub">Pharmacy Management System</div>
+  </div>
 
-   <!-- FORM START -->
-   <form action="/login" method="POST">
+  <div class="card-body">
+    <div class="welcome">Welcome back 👋</div>
+    <div class="hint">Sign in to your pharmacy dashboard</div>
 
-    <input type="text" name="username" placeholder="Username" required>
+    <!-- ERROR MESSAGE -->
+    <div id="errorMsg" class="error-msg">
+      ❌ Invalid username or password. Please try again.
+    </div>
 
-    <input type="password" name="password" placeholder="Password" required>
+    <form action="/login" method="POST">
+      <label for="username">Username</label>
+      <div class="input-wrap" id="usernameWrap">
+        <span class="input-icon">👤</span>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      </div>
 
-    <button type="submit">Login</button>
+      <label for="password">Password</label>
+      <div class="input-wrap" id="passwordWrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
 
-</form>
+      
+
+      <button type="submit" class="btn">Login →</button>
+    </form>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">MedTrack LK</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="footer">System Active 🟢 &nbsp;|&nbsp; <span>Secure Login</span></div>
+  </div>
 </div>
+
+<script>
+    if (window.location.search.includes("error=true")) {
+      const msg = document.getElementById("errorMsg");
+      msg.style.display = "block";
+      document.getElementById("usernameWrap").classList.add("input-error");
+      document.getElementById("passwordWrap").classList.add("input-error");
+  
+      // Clear ?error=true from URL so refresh won't show it again
+      window.history.replaceState({}, document.title, "/login.html");
+    }
+  </script>
 
 </body>
 </html>
